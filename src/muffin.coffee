@@ -8,9 +8,9 @@ glob             = require 'glob'
 {spawn, exec}    = require 'child_process'
 orgExec = exec
 
-extend = (onto, other) ->
+extend = (onto, others...) ->
   result = onto
-  for o in [@,other]
+  for o in others
     for k,v of o
       result[k] = v
   result
@@ -103,6 +103,7 @@ notify = (source, origMessage, error = false) ->
   promise
 
 copyFile = (source, target, options = {}) ->
+  console.log options
   readFile(source, options).then (contents) ->
     writeFile(target, contents, options).then ->
       notify source, "Moved #{source} to #{target} successfully"
