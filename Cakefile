@@ -1,4 +1,5 @@
 muffin = require './lib/muffin'
+glob = require 'glob'
 
 option '-w', '--watch', 'continue to watch the files and rebuild them when they change'
 option '-c', '--commit', 'operate on the git index instead of the working tree'
@@ -11,5 +12,5 @@ task 'build', 'compile muffin', (options) ->
       'src/muffin.coffee'       : (matches) -> muffin.compileScript(matches[0], 'lib/muffin.js', options)
   console.log "Watching src..." if options.watch
 
-task 'test', 'test', (options) ->
-  muffin.writeFile('test.js', '123', {})
+task 'stat', 'print source code stats', (options) ->
+  muffin.statFiles(glob.globSync('./src/**/*').concat(glob.globSync('./lib/**/*')))

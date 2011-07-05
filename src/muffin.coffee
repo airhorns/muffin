@@ -1,4 +1,8 @@
-# Copyright Shopify, 2011
+# muffin.js -> handy helpers for building cakefiles
+#
+# Licensed under the MIT License, excluding cloc.pl
+# Includes cloc.pl from http://cloc.sourceforge.net/, licenced under GPL V2
+
 CoffeeScript     = require 'coffee-script'
 q                = require 'q'
 fs               = require 'q-fs'
@@ -103,7 +107,6 @@ notify = (source, origMessage, error = false) ->
   promise
 
 copyFile = (source, target, options = {}) ->
-  console.log options
   readFile(source, options).then (contents) ->
     writeFile(target, contents, options).then ->
       notify source, "Moved #{source} to #{target} successfully"
@@ -130,6 +133,90 @@ minifyScript = (source, options = {}) ->
 compileMap = (map) ->
   for pattern, action of map
     {pattern: new RegExp(pattern), action: action}
+
+ensurePerl = () ->
+  orgExec 'perl --version', (error, stdout, stderr) ->
+    if error?
+      throw 'You need a perl v5.3 or higher installed to do this with muffin.'
+
+clocPath = path.normalize( __dirname + "/../deps/cloc.pl" )
+langDefPath = path.normalize( __dirname + "/../deps/cloc_lang_def.txt")
+
+cloc = (filename) -> 
+  [child, promise] = exec "#{clocPath} --csv --read-lang-def=#{langDefPath} #{filename}"
+  q.when promise, ([csv, stderr]) ->
+    throw stderr.toString() if stderr.toString().length > 0
+
+    [discard, csv] = csv.split("\n\n")
+    rows = csv.split("\n")
+    names = rows.shift() # get rid of column names
+    rows.pop() # get rid of empty newline at the end
+    rows = rows.map (row) -> row.split(',')
+    row = rows[0]
+
+    return {
+      filename: filename
+      filetype: row[1]
+      blank: row[2]
+      comment: row[3]
+      sloc: row[4]
+    }
+
+fileStat = (filename) ->
+  q.when fs.stat(filename), (stats) ->
+    size = stats.size
+    units = ["bytes", "KB", "MB"]
+    for unit in units
+      break if size < 1024
+      size = size / 1024
+
+    size = "#{(Math.round(size*100)/100).toFixed(2)} #{unit}"
+
+    return {
+      size: size
+      modified: stats.mtime
+      filename: filename
+    }
+
+statFiles = (files, options = {}) ->
+  ensurePerl()
+  fields = options.fields || ['filename', 'filetype', 'sloc', 'size']
+  
+  # glob files if given a string
+  if typeof files is 'string'
+    files = glob.globSync files
+
+  # cloc and filestat each file
+  promises = files.map (file) ->
+    q.join cloc(file), fileStat(file), (clocstats, filestats) ->
+      extend clocstats, filestats
+  
+  promise.end() for promise in promises
+
+  x = q.join promises..., (results...) ->
+    # Add the headers to the top of the table
+    headers = {}
+    for field in fields
+      headers[field] = (field.charAt(0).toUpperCase() + field.slice(1))
+    results.unshift headers
+    
+    # Figure out how wide each column must be
+    maxLengths = for field in fields
+      max = Math.max.apply Math, results.map (result) -> result[field].toString().length
+      max + 2
+    
+    # Print out each row of results
+    for result in results
+      out = []
+      for field, i in fields
+        data = result[field].toString()
+        out.push ' ' for j in [data.length..maxLengths[i]]
+        out.push data
+      console.log out.join('')
+
+    return results
+  x.end()
+  x
 
 run = (args) ->
   # Grab the glob if not given
@@ -166,5 +253,5 @@ run = (args) ->
     args.after() if args.after
   done.end()
 
-for k, v of {run, copyFile, doccoFile, notify, minifyScript, readFile, writeFile, compileScript, exec, extend}
+for k, v of {run, copyFile, doccoFile, notify, minifyScript, readFile, writeFile, compileScript, exec, extend, statFiles}
   exports[k] = v
