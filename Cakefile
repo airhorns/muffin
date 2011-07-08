@@ -14,3 +14,10 @@ task 'build', 'compile muffin', (options) ->
 
 task 'stat', 'print source code stats', (options) ->
   muffin.statFiles(glob.globSync('./src/**/*').concat(glob.globSync('./lib/**/*')))
+
+task 'doc', 'autogenerate docco anotated source and node IDL files', (options) ->
+  muffin.run
+    files: './src/**/*'
+    options: options
+    map:
+      'src/muffin.coffee'       : (matches) -> muffin.doccoFile(matches[0], options)
