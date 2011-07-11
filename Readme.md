@@ -24,18 +24,20 @@ muffin = require 'muffin'
 
 `muffin.js`
 
-  + allows you to define a "map" of actions to take with certain files, which makes making Makefile style Cakefiles a bit easier
-  + takes from you a number of file to action pairs, where you specify the file as a regex pattern run on the source tree, and the action as a Javascript function.
-  + provides a bunch of high level functions to use within those map actions to do actual work
-  + includes goodies like file system watching, so that when a file changes the action is re run, the ability to operate on the git stage instead of the current state in the file system, and handy callbacks sprinkled about which deal with weird asynchronous race conditions for you.
+  + allows you to define a map of actions to take using certain files, making making Makefile style Cakefiles a bit easier
+  + takes this map from you as a set of file to action pairs, where you specify the file as a regex pattern (then run on the source tree), and the action as a Javascript function.
+  + provides a bunch of high level functions to use within those map actions to do real work
+  + includes free goodies like file system watching, so that when a file changes the action is re run, the ability to operate on the git stage instead of the current state in the file system, and handy callbacks sprinkled about which deal with weird asynchronous race conditions for you.
 
 ## Reference
 
 First, the main entry point, `muffin.run`:
 
-    muffin.run(options)
+```coffeescript
+muffin.run(options)
+```
 
-`options` is an object containing the keys:
+Call this function in your Cake task and pass it some `options`. `options` is an object containing the keys:
 
   + `files`: a `String` or `Array` thereof of files (relative to the Cakefile) which muffin will look at. The string or strings can be single file paths or `glob(3)` style paths with `*` and `**` style wildcards and such.
   + `options`: another `Object`, containing any options passed in from Cake (so you don't have to extend the first object)
@@ -46,7 +48,7 @@ First, the main entry point, `muffin.run`:
 
 ### An example
 
-From the `muffin.js` Cakefile itself:
+Take a look at this example from the `muffin.js` Cakefile itself:
 
 ```coffeescript
 # Define a Cake task called build
@@ -59,6 +61,8 @@ task 'build', 'compile muffin', (options) ->
     map:
       'src/muffin.coffee' : (matches) -> muffin.compileScript(matches[0], 'lib/muffin.js', options)
 ```
+
+We define a `build` task, and in it we run `muffin` on all the files anywhere within the `src` dir. For all of these files who's filenames match `src/muffin.coffee`, which is really just one I guess, we get `muffin` to compile it to `lib/muffin.js`, according to the options passed to the Cake task.
 
 From a more complex project:
 
@@ -93,7 +97,9 @@ task 'test', 'compile project.js and the tests and run them on the command line'
         tests: glob.globSync("#{tmpdir}/*_test.js")
 ```
 
-Next, the helper functions available for use in the map actions. Note that muffin internally uses [`q`](https://github.com/kriskowal/q "q on github"), a promise library which makes it really easy to interface with the asynchronous scheduling engine in `muffin`. If your action function is asynchronous, you must return a `q.Promise` from your action function. By doing this, `muffin` can ensure the `after` callbacks do in fact run after all the actions have been completed. 
+## Reference
+
+Below are some notes on the helper functions available for use in the map actions. Note that `muffin` internally uses [`q`](https://github.com/kriskowal/q "q on github"), a JavaScript promise library which makes it really easy to interface with the asynchronous scheduling piece of `muffin`. If your action function is asynchronous, which it almost always will be, you must return a `q.Promise` from your action function. By doing this, `muffin` can ensure the `after` callbacks do in fact run after all the actions have been completed. 
 
 All the functions below return 'q.Promise' objects, so using them as they are used in the examples above works quite well.
 
