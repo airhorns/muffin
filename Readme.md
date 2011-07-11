@@ -177,6 +177,9 @@ task 'build', 'build my super project', (options) ->
 
 That's it!
 
+# Source
+
+The annotated source code for muffin can be found [here](http://hornairs.github.com/muffin/).
 # License
 
 Copyright (C) 2011 by Jaded Pixel Inc.
