@@ -71,22 +71,28 @@ notify = (source, origMessage, error = false) ->
 
 readFile = (file, options = {}) ->
   deferred = q.defer()
-  
+
   # Read the file from the git index if we're using the stage as the files being caked,
   # or otherwise use `q-fs` to read the file and return a promise.
-  if options.commit
-    exec "git show :"+file, (err, stdout, stderr) ->
-      if err?
-        handleFileError file, err, options
-      else
-        deffered.resolve stdout
+  if runOptions.commit
+    [child, promise] = exec "git show :#{file}"
+    child.stdin.setEncoding('utf8')
+    child.stdin.end()
+    q.when promise
+    , (stdout, stderr) ->
+      lines = stdout.toString().split('\n')
+      lines.pop()
+      str = lines.join('\n')
+      deferred.resolve(str)
+    , (reason) ->
+      handleFileError(file, reason, options)
   else
-    fs.read(file).then((contents) -> 
+    fs.read(file).then((contents) ->
       deferred.resolve(contents)
-    , (error) -> 
-      handleFileError(file, err, options)
+    , (reason) ->
+      handleFileError(file, reason, options)
     )
- 
+
   deferred.promise
 
 writeFile = (file, data, options = {}) ->
@@ -94,7 +100,7 @@ writeFile = (file, data, options = {}) ->
 
   # Write the file to the git index if we're using the stage as the files being caked,
   # or otherwise use `q-fs` to write while returning a promise.
-  if options.commit
+  if runOptions.commit
 
     # With git, it takes two stages to stage a file. We write the object to `git hash-object` over
     # stdin and wait for it to spit a sha back out. We then update the index with the new hashed
@@ -102,7 +108,7 @@ writeFile = (file, data, options = {}) ->
     [child, promise] = exec "git hash-object --stdin -w"
     child.stdin.write(data)
     child.stdin.end()
-    
+
     promise.then ([stdout, stderr]) ->
       sha = stdout.substr(0,40)
       [subchild, subpromise] = exec "git update-index --add --cacheinfo 100#{mode.toString(8)} #{sha} #{file}"
@@ -151,33 +157,32 @@ growlAvailble = false
 orgExec growlCommand('--version'), (err, stdout, stderr) ->
   growlAvailble = err?
 
-
 doccoFile = (source, options = {}) ->
   # Just tell docco to generate the one file by using it's command line helper
   [child, promise] = exec("docco #{source}")
   return promise.then ([stdout, stderr]) ->
     # Notify the user if any errors occured.
-    notify source, stdout.toString() if stdout.toString().length > 0  
-    notify source, stderr.toString(), true if stderr.toString().length > 0 
+    notify source, stdout.toString() if stdout.toString().length > 0
+    notify source, stderr.toString(), true if stderr.toString().length > 0
 
 minifyScript = (source, options = {}) ->
   # Grab a reference to uglify. This isn't always globablly required since not everyone will minimize.
   {parser, uglify} = require("uglify-js")
-  
+
   # Read the file and then step through the transformations of the AST.
   readFile(source, options).then (original) ->
     ast = parser.parse(original)  # Parse original JS code and get the initial AST.
     ast = uglify.ast_mangle(ast)  # Get a new AST with mangled names.
     ast = uglify.ast_squeeze(ast) # Get an AST with compression optimizations.
-    final = uglify.gen_code(ast) 
+    final = uglify.gen_code(ast)
     finalPath = source.split('.')
     finalPath.pop()
     finalPath.push('min.js')
-    # Write out the final code to the same file with a `min.js` extension instead of just `.js`. This 
+    # Write out the final code to the same file with a `min.js` extension instead of just `.js`. This
     # is also returned as a promise for chaining if need be.
     return writeFile(finalPath.join('.'), final, options)
-  
-# Internal tracking variable and function used for asserting that Perl exists on the system muffin is being run on. 
+
+# Internal tracking variable and function used for asserting that Perl exists on the system muffin is being run on.
 perlPresent = undefined
 perlError = () -> throw 'You need a perl v5.3 or higher installed to do this with muffin.'
 ensurePerl = () ->
@@ -194,14 +199,14 @@ clocPath = path.normalize( __dirname + "/../deps/cloc.pl" )
 langDefPath = path.normalize( __dirname + "/../deps/cloc_lang_def.txt")
 
 # Use `cloc` in the deps dir to count the SLOC in the file.
-clocFile = (filename) -> 
+clocFile = (filename) ->
   ensurePerl()
   # Grab the output of `cloc` in CSV.
   [child, promise] = exec "#{clocPath} --csv --read-lang-def=#{langDefPath} #{filename}"
 
   q.when promise, ([csv, stderr]) ->
     throw stderr.toString() if stderr.toString().length > 0
-    
+
     # Split up the output into headers and CSV by splitting by double newline, and then into rows
     # by splitting by newline.
     [discard, csv] = csv.split("\n\n")
@@ -209,7 +214,7 @@ clocFile = (filename) ->
     # Discard the row of column names, discard the empty newline at the end, and then split each row
     # into comma delimited columns.
     names = rows.shift()
-    rows.pop() 
+    rows.pop()
     rows = rows.map (row) -> row.split(',')
 
     # Use the first row since we've only passed one file to `cloc`.
@@ -247,7 +252,7 @@ statFile = (filename) ->
 statFiles = (files, options = {}) ->
   # Grab the array of fields to include in the output.
   fields = options.fields || ['filename', 'filetype', 'sloc', 'size']
-  
+
   # If given a string, glob it to expand any wildcards.
   if typeof files is 'string'
     files = glob.globSync files
@@ -258,13 +263,13 @@ statFiles = (files, options = {}) ->
   promises = files.map (file) ->
     q.join clocFile(file), statFile(file), (clocstats, filestats) ->
       extend clocstats, filestats
-  
+
   # Ensure any errors thrown during the join of the statting aren't swallowed by marking the promises as no longer
   # chainable.
   promise.end() for promise in promises
-  
+
   # For every file's stats (or promise thereof), print out the row in the table. Do this by first figuring out
-  # what the widest value in each column is, and then printing while padding all the shorter values out until they 
+  # what the widest value in each column is, and then printing while padding all the shorter values out until they
   # reach the same length.
   x = q.join promises..., (results...) ->
     # Add the headers to the top of the table.
@@ -272,17 +277,17 @@ statFiles = (files, options = {}) ->
     for field in fields
       headers[field] = (field.charAt(0).toUpperCase() + field.slice(1))
     results.unshift headers
-    
-    # Figure out how wide each column must be, keyed by integer column index. Note that the header row is included 
+
+    # Figure out how wide each column must be, keyed by integer column index. Note that the header row is included
     # in the fields array here because a header may be the widest cell in the column.
     maxLengths = for field in fields
       max = Math.max.apply Math, results.map (result) -> result[field].toString().length
       max + 2
-    
-    # Print out each row of results. Use a mutable array buffer which is then joined so new strings aren't created with a 
+
+    # Print out each row of results. Use a mutable array buffer which is then joined so new strings aren't created with a
     # bunch of += ops.
     for result in results
-      out = [] 
+      out = []
       for field, i in fields
         data = result[field].toString()
         out.push ' ' for j in [data.length..maxLengths[i]]
@@ -298,6 +303,9 @@ compileMap = (map) ->
   for pattern, action of map
     {pattern: new RegExp(pattern), action: action}
 
+# Store a reference to the options that muffin was run with so we can ensure that none get lost if they don't get passed in by the user.
+runOptions = {}
+
 run = (args) ->
   # Grab the glob if not given by globbing a default string, globbing a given string, or globbing the array of given strings.
   if !args.files?
@@ -306,12 +314,15 @@ run = (args) ->
     args.files = glob.globSync args.files
   else
     args.files = args.files.map (x) -> glob.globSync(x)
-  
+
   compiledMap = compileMap args.map
+  
+  # Save the reference to this run's options. Unfortuantly this renders muffin not many run safe. Bummer, for now.
+  runOptions = args.options
 
   # Run the before callback, and wait till it finishes by wrapping it in a `q.ref` call to get a promise.
   before = -> q.ref if args.before then args.before() else true
-  q.when start = before(), 
+  q.when start = before(),
 
     # Once the before callback has been successfully run, loop over all the pattern -> action pairs, and see if they
     # match any of the files in the array. If so, delete the file, and run the action.
@@ -324,6 +335,9 @@ run = (args) ->
 
           # Watch the file if the option was given.
           if args.options.watch
+            if args.options.commit
+              console.error "Can't watch committed versions of files, sorry!"
+              process.exit 1
             do (map, matches) ->
               ofs.watchFile file, persistent: true, interval: 250, (curr, prev) ->
                 return if curr.mtime.getTime() is prev.mtime.getTime()
@@ -335,7 +349,7 @@ run = (args) ->
                   work.end()
 
                 start.end()
-          
+
           # Return another promise which will resolve to the work promise
           done = q.when(done, -> work)
       done
@@ -344,7 +358,7 @@ run = (args) ->
     q.when done, () ->
       args.after() if args.after
     done.end()
-  
+
   start.end()
 
 for k, v of {run, copyFile, doccoFile, notify, minifyScript, readFile, writeFile, compileScript, exec, extend, statFiles}
