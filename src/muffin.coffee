@@ -313,7 +313,7 @@ run = (args) ->
   else if typeof args.files is 'string'
     args.files = glob.globSync args.files
   else
-    args.files = args.files.map (x) -> glob.globSync(x)
+    args.files = args.files.reduce ((a, b) -> a.concat(glob.globSync(b))), []
 
   compiledMap = compileMap args.map
   
