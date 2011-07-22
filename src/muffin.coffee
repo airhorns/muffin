@@ -11,6 +11,7 @@ fs               = require 'q-fs'
 ofs              = require 'fs'
 path             = require 'path'
 glob             = require 'glob'
+temp             = require 'temp'
 
 # Require `child_process` and grab a reference to it so the identifier `exec` is free.
 {spawn, exec}    = require 'child_process'
@@ -41,6 +42,25 @@ exec = (command, options = {}) ->
 # Internal helper function for deciding if the repo is in the midst of a rebase.
 inRebase = ->
   path.existsSync('.git/rebase-apply')
+
+ask = (question, format = /.+/) ->
+  stdin = process.stdin
+  stdout = process.stdout
+  deferred = q.defer()
+
+  stdin.resume()
+  stdout.write(question + ": ")
+
+  stdin.once 'data', (data) ->
+    stdin.pause()
+    data = data.toString().trim()
+    if format.test(data) 
+      deferred.resolve data
+    else
+      stdout.write "It should match: #{format}\n"
+      deferred.resolve ask(question, format)
+
+  deferred.promise
 
 # Notifies the user of a success or error during compilation
 notify = (source, origMessage, error = false) ->
@@ -182,6 +202,13 @@ minifyScript = (source, options = {}) ->
     # is also returned as a promise for chaining if need be.
     return writeFile(finalPath.join('.'), final, options)
 
+# Internal function for finding the git root
+getGitRoot = () ->
+  [child, promise] = exec 'git rev-parse --show-toplevel'
+  child.stdin.end()
+  promise.then ([stdout, stderr]) ->
+    stdout.toString().trim()
+
 # Internal tracking variable and function used for asserting that Perl exists on the system muffin is being run on.
 perlPresent = undefined
 perlError = () -> throw 'You need a perl v5.3 or higher installed to do this with muffin.'
@@ -248,15 +275,7 @@ statFile = (filename) ->
       filename: filename
     }
 
-# Logs a stats about files to the console for inspection.
-statFiles = (files, options = {}) ->
-  # Grab the array of fields to include in the output.
-  fields = options.fields || ['filename', 'filetype', 'sloc', 'size']
-
-  # If given a string, glob it to expand any wildcards.
-  if typeof files is 'string'
-    files = glob.globSync files
-
+_statFiles = (files, options = {}) ->
   # For every file to be statted, `cloc` and `fs.stat` them both using the two respective helpers. These
   # both return promises which we join. For each file (and joined promise), ensure the promise resolves to
   # the merged stats objects from both helpers.
@@ -271,31 +290,110 @@ statFiles = (files, options = {}) ->
   # For every file's stats (or promise thereof), print out the row in the table. Do this by first figuring out
   # what the widest value in each column is, and then printing while padding all the shorter values out until they
   # reach the same length.
-  x = q.join promises..., (results...) ->
-    # Add the headers to the top of the table.
-    headers = {}
-    for field in fields
-      headers[field] = (field.charAt(0).toUpperCase() + field.slice(1))
-    results.unshift headers
+  q.all promises
 
-    # Figure out how wide each column must be, keyed by integer column index. Note that the header row is included
-    # in the fields array here because a header may be the widest cell in the column.
-    maxLengths = for field in fields
-      max = Math.max.apply Math, results.map (result) -> result[field].toString().length
-      max + 2
+printTable = (fields, results) ->
+  # Add the headers to the top of the table.
+  headers = {}
+  for field in fields
+    headers[field] = (field.charAt(0).toUpperCase() + field.slice(1))
+  results.unshift headers
 
-    # Print out each row of results. Use a mutable array buffer which is then joined so new strings aren't created with a
-    # bunch of += ops.
-    for result in results
-      out = []
-      for field, i in fields
-        data = result[field].toString()
-        out.push ' ' for j in [data.length..maxLengths[i]]
-        out.push data
-      console.log out.join('')
+  # Figure out how wide each column must be, keyed by integer column index. Note that the header row is included
+  # in the fields array here because a header may be the widest cell in the column.
+  maxLengths = for field in fields
+    max = Math.max.apply Math, results.map (result) -> 
+      unless result[field]?
+        console.error "Couldn't get value from #{field} on", result
+        
+      result[field].toString().length
+    max + 2
 
-    return results
-  x
+  # Print out each row of results. Use a mutable array buffer which is then joined so new strings aren't created with a
+  # bunch of += ops.
+  for result in results
+    out = []
+    for field, i in fields
+      data = result[field].toString()
+      out.push ' ' for j in [data.length..maxLengths[i]]
+      out.push data
+    console.log out.join('')
+
+  return results
+
+# Logs a stats about files to the console for inspection.
+statFiles = (files, options = {}) ->
+  # If given a string, glob it to expand any wildcards.
+  if typeof files is 'string'
+    files = glob.globSync files
+
+  # If we're comparing two shas, we need to check the two shas out somewhere else, and run the stats on all those files
+  if options.compare
+    fields = options.fields || ['filename', 'filetype']
+    compareFields = options.compareFields || ['sloc', 'size']
+
+    # Get the two git refs we are comparing
+    ask('git ref A').then((refA) -> 
+      ask('git ref B').then (refB) ->
+
+        # Get the root of the git repository
+        getGitRoot().then((root) ->
+
+          clones = for ref in [refA, refB]
+            do (ref) ->
+              # Clone each root to a temporary directory and check out the given ref
+              tmpdir = temp.mkdirSync()
+              cloneCmd = "git clone #{root} #{tmpdir}"
+              console.error cloneCmd
+              [child, clone] = exec cloneCmd
+              child.stdin.end()
+            
+              clone.then(([stdout, stderr]) ->
+                [child, checkingOut] = exec "cd #{tmpdir} && git checkout #{ref}"
+                checkingOut
+              ).then () ->
+
+                # Get an array of file paths relative to this temporary checkout
+                clonedFiles = files.map (file) -> path.resolve(file).replace(root, tmpdir)
+
+                # Stat the temporary files, and once the details come in, augment them with the original file's details
+                _statFiles(clonedFiles, options).then (results) ->
+                  for result, i in results
+                    result['originalFilename'] = files[i]
+                    result['ref'] = ref
+                  results
+          # Wait for all the clones and statting to finish.
+          q.all(clones)
+        ).then((results) ->
+          
+          # Build a table key'd by the original filename
+          table = {}
+          for resultSet in results
+            for result in resultSet
+              tableEntry = (table[result.originalFilename] ||= {})
+              for k in fields
+                tableEntry[k] = result[k]
+              for k in compareFields
+                tableEntry["#{k} at #{result.ref}"] = result[k]
+          
+          # Revert to the original filename
+          results = for k, v of table
+            v['filename'] = k
+            v
+
+          # Grab a list of the table fields
+          tableFields = Array.prototype.slice.call fields
+          for field in compareFields
+            for ref in [refA, refB]
+              tableFields.push "#{field} at #{ref}"
+          printTable(tableFields, results)
+        )
+    ).end()
+  else
+    fields = options.fields || ['filename', 'filetype', 'sloc', 'size']
+    _statFiles(files, options).then((results) ->
+      printTable(fields, results)
+    ).end()
 
 # `compileMap` is an internal helper for taking the passed in options to `muffin.run` and turning strings
 # into useful objects.

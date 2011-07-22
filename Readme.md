@@ -133,7 +133,7 @@ Minifies a JavaScript file at `source` into a `min.js` file in the same director
 
     muffin.statFiles(files, options = {})
 
-Logs SLOC counts to the console for all the files included in the `files` (`Array`) option. Plays nice with both CoffeeScript and JavaScript. Needs (and checks) for a valid Perl > 5.3 installation to count lines. Accepts a `fields` option, which is a declarative array of string names of fields to be included in the output. Availabel fields are `filename`, `filetype`, `sloc`, `blank`, `comment`, size`, and `modified`.
+Logs SLOC counts to the console for all the files included in the `files` (`Array`) option. Plays nice with both CoffeeScript and JavaScript. Needs (and checks) for a valid Perl > 5.3 installation to count lines. Accepts a `fields` option, which is a declarative array of string names of fields to be included in the output. Available fields are `filename`, `filetype`, `sloc`, `blank`, `comment`, size`, and `modified`. `statFiles` can also compare the given files across refs in git by passing it the `compare` and `compareFields` option. It will then prompt the user for the fields to compare, clone and checkout the two versions in a temp directory, and report the different stats in the same table.
 
     muffin.doccoFile(file, options)
 
@@ -157,12 +157,14 @@ Simple variadic extend implementation which is handy for extending options hashe
 
   + 'watch': Monitor any files who match in the map and rerun their action when they change.
   + 'commit': Use the git stage if one exists instead of the current files in the directory. This is useful when you want to only stage some changes and commit them.
+  + 'compare': Compare a set of files across two git refs. `statFiles` only.
 
 You can use something like this to expose these options in Cake:
 
 ```coffeescript
 option '-w', '--watch', 'continue to watch the files and rebuild them when they change'
 option '-c', '--commit', 'operate on the git index instead of the working tree'
+option '-m', '--compare', 'compare across git refs, stats task only.'
 ```
 
 and then just ensure you pass in the options when you declare a task:
@@ -180,6 +182,7 @@ That's it!
 # Source
 
 The annotated source code for muffin can be found [here](http://hornairs.github.com/muffin/).
+
 # License
 
 Copyright (C) 2011 by Jaded Pixel Inc.
