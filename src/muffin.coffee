@@ -82,8 +82,9 @@ notify = (source, origMessage, error = false) ->
     console.log origMessage
 
   # Growl if we can, or
-  if growlAvailble
+  if growlAvailable
     [child, promise] = exec command
+    child.stdin.end()
   else
     # return an already fufilled promise if not
     promise = q.ref true
@@ -173,9 +174,16 @@ growlCommand = (args...) ->
   args.join(' ')
 
 # Check if growl is available so we can growl notifications only if growl is present
-growlAvailble = false
-orgExec growlCommand('--version'), (err, stdout, stderr) ->
-  growlAvailble = err?
+growlAvailable = false
+[ _, growlCheckPromise] = exec 'which growlnotify'
+
+growlCheckPromise = q.when(growlCheckPromise, ([stdout, stderr]) ->
+  growlAvailable = stderr.toString().length == 0
+  true
+, (reason) -> 
+  growlAvailable = false
+  false
+)
 
 doccoFile = (source, options = {}) ->
   # Just tell docco to generate the one file by using it's command line helper
@@ -419,9 +427,8 @@ run = (args) ->
   runOptions = args.options
 
   # Run the before callback, and wait till it finishes by wrapping it in a `q.ref` call to get a promise.
-  before = -> q.ref if args.before then args.before() else true
-  q.when start = before(),
-
+  before = -> q.when growlCheckPromise, -> q.ref(if args.before then args.before() else true)
+  q.when start = before(), ->
     # Once the before callback has been successfully run, loop over all the pattern -> action pairs, and see if they
     # match any of the files in the array. If so, delete the file, and run the action.
     done = compiledMap.reduce (done, map) ->

@@ -1,4 +1,4 @@
-muffin = require './lib/muffin'
+muffin = require './src/muffin'
 glob = require 'glob'
 
 option '-w', '--watch', 'continue to watch the files and rebuild them when they change'
