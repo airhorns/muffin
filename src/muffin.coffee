@@ -54,7 +54,7 @@ ask = (question, format = /.+/) ->
   stdin.once 'data', (data) ->
     stdin.pause()
     data = data.toString().trim()
-    if format.test(data) 
+    if format.test(data)
       deferred.resolve data
     else
       stdout.write "It should match: #{format}\n"
@@ -180,7 +180,7 @@ growlAvailable = false
 growlCheckPromise = q.when(growlCheckPromise, ([stdout, stderr]) ->
   growlAvailable = stderr.toString().length == 0
   true
-, (reason) -> 
+, (reason) ->
   growlAvailable = false
   false
 )
@@ -199,10 +199,11 @@ minifyScript = (source, options = {}) ->
 
   # Read the file and then step through the transformations of the AST.
   readFile(source, options).then (original) ->
-    ast = parser.parse(original)  # Parse original JS code and get the initial AST.
-    ast = uglify.ast_mangle(ast)  # Get a new AST with mangled names.
-    ast = uglify.ast_squeeze(ast) # Get an AST with compression optimizations.
-    final = uglify.gen_code(ast)
+    ast = parser.parse(original, options.parse)  # Parse original JS code and get the initial AST.
+    ast = uglify.ast_mangle(ast, options.ast_mangle)  # Get a new AST with mangled names.
+    ast = uglify.ast_squeeze(ast, options.ast_squeeze) # Get an AST with compression optimizations.
+    ast = options.transform(ast) if options.transform? # Do any custom transforms the user asks for
+    final = uglify.gen_code(ast, options.gen_code)
     finalPath = source.split('.')
     finalPath.pop()
     finalPath.push('min.js')
@@ -310,10 +311,10 @@ printTable = (fields, results) ->
   # Figure out how wide each column must be, keyed by integer column index. Note that the header row is included
   # in the fields array here because a header may be the widest cell in the column.
   maxLengths = for field in fields
-    max = Math.max.apply Math, results.map (result) -> 
+    max = Math.max.apply Math, results.map (result) ->
       unless result[field]?
         console.error "Couldn't get value from #{field} on", result
-        
+
       result[field].toString().length
     max + 2
 
@@ -341,7 +342,7 @@ statFiles = (files, options = {}) ->
     compareFields = options.compareFields || ['sloc', 'size']
 
     # Get the two git refs we are comparing
-    ask('git ref A').then((refA) -> 
+    ask('git ref A').then((refA) ->
       ask('git ref B').then (refB) ->
 
         # Get the root of the git repository
@@ -355,7 +356,7 @@ statFiles = (files, options = {}) ->
               console.error cloneCmd
               [child, clone] = exec cloneCmd
               child.stdin.end()
-            
+
               clone.then(([stdout, stderr]) ->
                 [child, checkingOut] = exec "cd #{tmpdir} && git checkout #{ref}"
                 checkingOut
@@ -373,7 +374,7 @@ statFiles = (files, options = {}) ->
           # Wait for all the clones and statting to finish.
           q.all(clones)
         ).then((results) ->
-          
+
           # Build a table key'd by the original filename
           table = {}
           for resultSet in results
@@ -383,7 +384,7 @@ statFiles = (files, options = {}) ->
                 tableEntry[k] = result[k]
               for k in compareFields
                 tableEntry["#{k} at #{result.ref}"] = result[k]
-          
+
           # Revert to the original filename
           results = for k, v of table
             v['filename'] = k
@@ -422,7 +423,7 @@ run = (args) ->
     args.files = args.files.reduce ((a, b) -> a.concat(glob.globSync(b))), []
 
   compiledMap = compileMap args.map
-  
+
   # Save the reference to this run's options. Unfortuantly this renders muffin not many run safe. Bummer, for now.
   runOptions = args.options
 
