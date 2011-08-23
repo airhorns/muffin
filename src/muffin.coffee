@@ -246,6 +246,14 @@ clocFile = (filename) ->
     # Split up the output into headers and CSV by splitting by double newline, and then into rows
     # by splitting by newline.
     [discard, csv] = csv.split("\n\n")
+    if !csv
+      return {
+        filename: filename
+        filetype: path.extname(filename).slice(1)
+        blank: "-"
+        comment: "-"
+        sloc: "-"
+      }
     rows = csv.split("\n")
     # Discard the row of column names, discard the empty newline at the end, and then split each row
     # into comma delimited columns.
