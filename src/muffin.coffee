@@ -199,10 +199,10 @@ minifyScript = (source, options = {}) ->
 
   # Read the file and then step through the transformations of the AST.
   readFile(source, options).then (original) ->
-    ast = parser.parse(original, options.parse)  # Parse original JS code and get the initial AST.
-    ast = uglify.ast_mangle(ast, options.ast_mangle)  # Get a new AST with mangled names.
-    ast = uglify.ast_squeeze(ast, options.ast_squeeze) # Get an AST with compression optimizations.
+    ast = parser.parse(original, options.parse)        # Parse original JS code and get the initial AST.
     ast = options.transform(ast) if options.transform? # Do any custom transforms the user asks for
+    ast = uglify.ast_mangle(ast, options.ast_mangle)   # Get a new AST with mangled names.
+    ast = uglify.ast_squeeze(ast, options.ast_squeeze) # Get an AST with compression optimizations.
     final = uglify.gen_code(ast, options.gen_code)
     finalPath = source.split('.')
     finalPath.pop()
