@@ -67,7 +67,7 @@ notify = (source, origMessage, error = false) ->
   if error
     # If notifying about an error, make sure any errors actually reference the file being
     # compiled.
-    basename = source.replace(/^.*[\/\\]/, '')
+    basename = source.toString().replace(/^.*[\/\\]/, '')
     if m = origMessage.match /Parse error on line (\d+)/
       message = "Parse error in #{basename}\non line #{m[1]}."
     else
@@ -81,14 +81,11 @@ notify = (source, origMessage, error = false) ->
     command = growlCommand '-n', 'Cake', '-p', '-1', '-t', "\"Action Succeeded\"", '-m', "\"#{source}\""
     console.log origMessage
 
-  # Growl if we can, or
+  # Growl if we can
   if growlAvailable
     [child, promise] = exec command
     child.stdin.end()
-  else
-    # return an already fufilled promise if not
-    promise = q.ref true
-  promise
+  true
 
 readFile = (file, options = {}) ->
   deferred = q.defer()
@@ -109,7 +106,7 @@ readFile = (file, options = {}) ->
       handleFileError(file, reason, options)
   else
     fs.read(file).then((contents) ->
-      deferred.resolve(contents)
+      deferred.resolve(contents.toString())
     , (reason) ->
       handleFileError(file, reason, options)
     )
@@ -117,7 +114,7 @@ readFile = (file, options = {}) ->
   deferred.promise
 
 writeFile = (file, data, options = {}) ->
-  mode = options.mode || 644
+  mode = options.mode || 0644
 
   # Write the file to the git index if we're using the stage as the files being caked,
   # or otherwise use `q-fs` to write while returning a promise.
@@ -138,14 +135,13 @@ writeFile = (file, data, options = {}) ->
     return promise
   else
     # Write the file, and then chmod the file using `q` promises.
-    fs.write(file, data.toString(), "w", "UTF-8").then (data) ->
-      return fs.chmod file, mode
-    , (reason) ->
-      # Make the common permissions error look a bit nicer.
-      if reason.toString().match(/not writable/g)
-        q.reject "#{file} isn't writable, please check permissions!"
-      else
-        q.reject(reason)
+    write = q.defer()
+    ofs.writeFile file, data, "UTF-8", (err) ->
+      return write.reject(err) if err
+      ofs.chmod file, mode, (err) ->
+        return write.reject(err) if err
+        write.resolve(true)
+    write.promise
 
 copyFile = (source, target, options = {}) ->
   # Read the file at the source and then write the file at the target
@@ -163,8 +159,9 @@ compileScript = (source, target, options = {}) ->
   readFile(source, options).then (data) ->
     try
       js = CoffeeScript.compile data, {source, bare: options?.bare}
-      writeFile(target, js, options).then ->
+      q.when writeFile(target, js, options), (whatevs) ->
         notify source, "Compiled #{source} to #{target} successfully" unless options.notify == false
+        true
     catch err
       handleFileError target, err, options
 
@@ -437,41 +434,46 @@ run = (args) ->
 
   # Run the before callback, and wait till it finishes by wrapping it in a `q.ref` call to get a promise.
   before = -> q.when growlCheckPromise, -> q.ref(if args.before then args.before() else true)
+
   q.when start = before(), ->
     # Once the before callback has been successfully run, loop over all the pattern -> action pairs, and see if they
     # match any of the files in the array. If so, delete the file, and run the action.
-    done = compiledMap.reduce (done, map) ->
+    done = false
+    x = done
+    compiledMap.forEach (map) ->
       for i, file of args.files
         if matches = map.pattern.exec(file)
           delete args.files[i]
           # Do the job and wrap it in a promise if it didn't already return one using `q.ref`.
-          work = q.ref map.action(matches)
+          work = q.defer()
+          try
+            q.when(map.action(matches), ((data) -> work.resolve(data)), ((reason) -> work.reject(reason)))
+          catch e
+            work.reject(e)
+
+          # Return another promise which will resolve to the work promise
+          done = q.when(done, -> work.promise)
 
           # Watch the file if the option was given.
           if args.options.watch
-            if args.options.commit
-              console.error "Can't watch committed versions of files, sorry!"
-              process.exit 1
+            console.error("Can't watch committed versions of files, sorry!") && process.exit(1) if args.options.commit
+
             do (map, matches) ->
               ofs.watchFile file, persistent: true, interval: 250, (curr, prev) ->
                 return if curr.mtime.getTime() is prev.mtime.getTime()
                 return if inRebase()
-                q.when start = before(), ->
-                  work = q.ref map.action(matches)
-                  q.when work, (result) ->
+                q.when subStart = before(), ->
+                  moreWork = q.ref map.action(matches)
+                  q.when moreWork, (result) ->
                     args.after() if args.after
-                  work.end()
+                  moreWork.end()
 
-                start.end()
+                subStart.end()
 
-          # Return another promise which will resolve to the work promise
-          done = q.when(done, -> work)
-      done
-    , undefined
-
-    q.when done, () ->
+    done = q.when(done, (v) ->
       args.after() if args.after
-    done.end()
+      true
+    ).end()
 
   start.end()
 
