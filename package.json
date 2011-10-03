@@ -2,7 +2,7 @@
   "author": "Harry Brundage <harry.brundage@jadedpixel.com> (http://shopify.com/)",
   "name": "muffin",
   "description": "Handy helpers for Cakefiles",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "homepage": "http://github.com/hornairs/muffin",
   "repository": {
     "type": "git",

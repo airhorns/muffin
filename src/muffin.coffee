@@ -152,6 +152,7 @@ copyFile = (source, target, options = {}) ->
 # Handy promise based file error handler, which is a simple wrapper for `notify`
 handleFileError = (file, err, options = {}) ->
   notify file, err.message, true unless options.notify == false
+  throw err
 
 # Following 2 functions are stolen from Jitter, https://github.com/TrevorBurnham/Jitter/blob/master/src/jitter.coffee
 # Compiles a script to a destination
