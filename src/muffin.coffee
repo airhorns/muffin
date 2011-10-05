@@ -87,6 +87,31 @@ notify = (source, origMessage, error = false) ->
     child.stdin.end()
   true
 
+# Recursively creates directories.
+# Borrowed from Bruno Pedro
+# https://github.com/bpedro/node-fs
+mkdir_p = (filePath, mode = 0777, callback, position = 0) ->
+  parts = path.normalize(filePath).split("/")
+  parts.shift() if parts[0] == ''
+  if position >= parts.length
+    if callback
+      return callback()
+    else
+      return true
+  directory = parts.slice(0, position + 1).join("/")
+  ofs.stat directory, (err) ->
+    if err == null
+      mkdir_p filePath, mode, callback, position + 1
+    else
+      ofs.mkdir directory, mode, (err) ->
+        if err && !(err.message.match /EEXIST/)
+          if callback
+            callback err
+          else
+            throw err
+        else
+          mkdir_p filePath, mode, callback, position + 1
+
 readFile = (file, options = {}) ->
   deferred = q.defer()
 
@@ -136,12 +161,17 @@ writeFile = (file, data, options = {}) ->
   else
     # Write the file, and then chmod the file using `q` promises.
     write = q.defer()
-    ofs.writeFile file, data, "UTF-8", (err) ->
+
+    mkdir_p path.dirname(file), 0755, (err) ->
       return write.reject(err) if err
-      ofs.chmod file, mode, (err) ->
+
+      ofs.writeFile file, data, "UTF-8", (err) ->
         return write.reject(err) if err
-        write.resolve(true)
-    write.promise
+        ofs.chmod file, mode, (err) ->
+          return write.reject(err) if err
+          write.resolve(true)
+
+    return write.promise
 
 copyFile = (source, target, options = {}) ->
   # Read the file at the source and then write the file at the target
@@ -154,15 +184,17 @@ handleFileError = (file, err, options = {}) ->
   notify file, err.message, true unless options.notify == false
   throw err
 
-# Following 2 functions are stolen from Jitter, https://github.com/TrevorBurnham/Jitter/blob/master/src/jitter.coffee
+# Compiles a string to a destination
+compileString = (coffeeSource, options = {}) -> js = CoffeeScript.compile coffeeSource, {bare: options?.bare}
+
 # Compiles a script to a destination
 compileScript = (source, target, options = {}) ->
   readFile(source, options).then (data) ->
     try
-      js = CoffeeScript.compile data, {source, bare: options?.bare}
-      q.when writeFile(target, js, options), (whatevs) ->
+      js = compileString(data, target, options)
+      return writeFile(target, js, options).then((whatevs) ->
         notify source, "Compiled #{source} to #{target} successfully" unless options.notify == false
-        true
+      )
     catch err
       handleFileError target, err, options
 
@@ -445,15 +477,8 @@ run = (args) ->
       for i, file of args.files
         if matches = map.pattern.exec(file)
           delete args.files[i]
-          # Do the job and wrap it in a promise if it didn't already return one using `q.ref`.
-          work = q.defer()
-          try
-            q.when(map.action(matches), ((data) -> work.resolve(data)), ((reason) -> work.reject(reason)))
-          catch e
-            work.reject(e)
-
           # Return another promise which will resolve to the work promise
-          done = q.when(done, -> work.promise)
+          done = q.wait(map.action(matches), done)
 
           # Watch the file if the option was given.
           if args.options.watch
@@ -464,19 +489,19 @@ run = (args) ->
                 return if curr.mtime.getTime() is prev.mtime.getTime()
                 return if inRebase()
                 q.when subStart = before(), ->
-                  moreWork = q.ref map.action(matches)
-                  q.when moreWork, (result) ->
+                  q.when map.action(matches), (result) ->
                     args.after() if args.after
                   moreWork.end()
 
                 subStart.end()
+      true
 
-    done = q.when(done, (v) ->
+    q.when(done, (v) ->
       args.after() if args.after
       true
     ).end()
 
   start.end()
 
-for k, v of {run, copyFile, doccoFile, notify, minifyScript, readFile, writeFile, compileScript, exec, extend, statFiles}
+for k, v of {run, copyFile, doccoFile, notify, minifyScript, readFile, writeFile, compileString, compileScript, exec, extend, statFiles, mkdir_p}
   exports[k] = v
