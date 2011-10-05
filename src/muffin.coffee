@@ -92,13 +92,17 @@ notify = (source, origMessage, error = false) ->
 # https://github.com/bpedro/node-fs
 mkdir_p = (filePath, mode = 0777, callback, position = 0) ->
   parts = path.normalize(filePath).split("/")
-  parts.shift() if parts[0] == ''
+  if parts[0] == ''
+    parts.shift()
+    parts[0] = "/#{parts[0]}"
   if position >= parts.length
     if callback
       return callback()
     else
       return true
+
   directory = parts.slice(0, position + 1).join("/")
+
   ofs.stat directory, (err) ->
     if err == null
       mkdir_p filePath, mode, callback, position + 1
@@ -164,7 +168,6 @@ writeFile = (file, data, options = {}) ->
 
     mkdir_p path.dirname(file), 0755, (err) ->
       return write.reject(err) if err
-
       ofs.writeFile file, data, "UTF-8", (err) ->
         return write.reject(err) if err
         ofs.chmod file, mode, (err) ->
