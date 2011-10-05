@@ -185,13 +185,13 @@ handleFileError = (file, err, options = {}) ->
   throw err
 
 # Compiles a string to a destination
-compileString = (coffeeSource, options = {}) -> js = CoffeeScript.compile coffeeSource, {bare: options?.bare}
+compileString = (coffeeSource, options = {}) -> CoffeeScript.compile coffeeSource, {bare: options?.bare}
 
 # Compiles a script to a destination
 compileScript = (source, target, options = {}) ->
   readFile(source, options).then (data) ->
     try
-      js = compileString(data, target, options)
+      js = compileString(data, options)
       return writeFile(target, js, options).then((whatevs) ->
         notify source, "Compiled #{source} to #{target} successfully" unless options.notify == false
       )
