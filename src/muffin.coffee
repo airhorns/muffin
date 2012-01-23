@@ -376,7 +376,7 @@ printTable = (fields, results) ->
 statFiles = (files, options = {}) ->
   # If given a string, glob it to expand any wildcards.
   if typeof files is 'string'
-    files = glob.globSync files
+    files = glob.sync files
 
   # If we're comparing two shas, we need to check the two shas out somewhere else, and run the stats on all those files
   if options.compare
@@ -458,11 +458,11 @@ runOptions = {}
 run = (args) ->
   # Grab the glob if not given by globbing a default string, globbing a given string, or globbing the array of given strings.
   if !args.files?
-    args.files = glob.globSync './**/*'
+    args.files = glob.sync './**/*'
   else if typeof args.files is 'string'
-    args.files = glob.globSync args.files
+    args.files = glob.sync args.files
   else
-    args.files = args.files.reduce ((a, b) -> a.concat(glob.globSync(b))), []
+    args.files = args.files.reduce ((a, b) -> a.concat(glob.sync(b))), []
 
   compiledMap = compileMap args.map
 
