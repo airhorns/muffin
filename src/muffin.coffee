@@ -472,7 +472,7 @@ run = (args) ->
   # Run the before callback, and wait till it finishes by wrapping it in a `q.ref` call to get a promise.
   before = -> q.when growlCheckPromise, -> q.ref(if args.before then args.before() else true)
 
-  q.when start = before(), ->
+  q.when(start = before(), ->
     # Once the before callback has been successfully run, loop over all the pattern -> action pairs, and see if they
     # match any of the files in the array. If so, delete the file, and run the action.
     done = false
@@ -505,6 +505,7 @@ run = (args) ->
       true
     ).end()
 
+  ).end()
   start.end()
 
 for k, v of {run, copyFile, doccoFile, notify, minifyScript, readFile, writeFile, compileString, compileScript, exec, extend, statFiles, mkdir_p}
