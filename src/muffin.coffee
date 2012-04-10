@@ -90,7 +90,7 @@ notify = (source, origMessage, error = false) ->
 # Recursively creates directories.
 # Borrowed from Bruno Pedro
 # https://github.com/bpedro/node-fs
-mkdir_p = (filePath, mode = 0777, callback, position = 0) ->
+mkdir_p = (filePath, mode = 0o777, callback, position = 0) ->
   parts = path.normalize(filePath).split("/")
   if parts[0] == ''
     parts.shift()
@@ -143,7 +143,7 @@ readFile = (file, options = {}) ->
   deferred.promise
 
 writeFile = (file, data, options = {}) ->
-  mode = options.mode || 0644
+  mode = options.mode || 0o644
 
   # Write the file to the git index if we're using the stage as the files being caked,
   # or otherwise use `q-fs` to write while returning a promise.
@@ -166,7 +166,7 @@ writeFile = (file, data, options = {}) ->
     # Write the file, and then chmod the file using `q` promises.
     write = q.defer()
 
-    mkdir_p path.dirname(file), 0755, (err) ->
+    mkdir_p path.dirname(file), 0o755, (err) ->
       return write.reject(err) if err
       ofs.writeFile file, data, "UTF-8", (err) ->
         return write.reject(err) if err
