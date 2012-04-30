@@ -2,7 +2,7 @@
   "author": "Harry Brundage <harry.brundage@jadedpixel.com> (http://shopify.com/)",
   "name": "muffin",
   "description": "Handy helpers for Cakefiles",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "homepage": "http://github.com/hornairs/muffin",
   "repository": {
     "type": "git",
@@ -16,13 +16,14 @@
     "node": "0.4.x || 0.6.x"
   },
   "dependencies": {
-    "q": "0.7.1",
+    "q": "~>0.8",
     "q-fs": "0.1.17",
     "docco": "~0.3.0",
     "coffee-script": "~1.3",
     "glob": "~>3.0.1",
-    "uglify-js": "1.1.0",
+    "uglify-js": "~>1.2",
     "prompt": "~>0.1.3",
-    "temp": "~>0.2.0"
+    "temp": "~>0.2.0",
+    "snockets": "~>1.3"
   }
 }
