@@ -209,14 +209,10 @@ compileScript = (source, target, options = {}) ->
       handleFileError target, err, options
 
 # Compile a tree of files who's dependencies are expressed via snockets
-snockets = undefined
+snockets = new Snockets
 compileTree = (root, target, options = {}) ->
   compilation = q.defer()
-  snockets ||= new Snockets
-  snockets.scan root, (err, depGraph) ->
-    return compilation.reject(err) if err
-    #muffin.addWatchDependency(root, file) for file in depGraph.getChain(root)
-    snockets.getConcatenation root, {minify: false}, compilation.node()
+  snockets.getConcatenation root, {minify: false, async: false}, compilation.node()
 
   compilation.promise.then (returns) ->
     [contents, concatenationChanged] = returns
