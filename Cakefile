@@ -22,3 +22,5 @@ task 'doc', 'autogenerate docco anotated source and node IDL files', (options) -
     options: options
     map:
       'src/muffin.coffee'       : (matches) -> muffin.doccoFile(matches[0], options)
+
+task 'test', ->

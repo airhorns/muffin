@@ -17,6 +17,7 @@ Snockets         = require 'snockets'
 {spawn, exec}    = require 'child_process'
 orgExec          = exec
 
+muffin           = exports
 
 # Simple variadic extend
 extend = (onto, others...) ->
@@ -42,7 +43,7 @@ exec = (command, options = {}) ->
 
 # Internal helper function for deciding if the repo is in the midst of a rebase.
 inRebase = ->
-  fs.existsSync('.git/rebase-apply')
+  (if fs.existsSync then fs.existsSync else path.existsSync)('.git/rebase-apply')
 
 ask = (question, format = /.+/) ->
   stdin = process.stdin
@@ -212,6 +213,9 @@ compileScript = (source, target, options = {}) ->
 snockets = new Snockets
 compileTree = (root, target, options = {}) ->
   compilation = q.defer()
+  # Do synchronous snocketing for now because there are race conditions within snockets which result in bad dep graphs. Pout.
+  depGraph = snockets.scan root, {async: false}
+  muffin.addWatchDependency file for file in depGraph.getChain(root)
   snockets.getConcatenation root, {minify: false, async: false}, compilation.node()
 
   compilation.promise.then (returns) ->
@@ -265,7 +269,7 @@ minifyScript = (source, options = {}) ->
     return writeFile(finalPath.join('.'), final, options).then(-> final)
 
 # Internal function for finding the git root
-getGitRoot = () ->
+getGitRoot = ->
   [child, promise] = exec 'git rev-parse --show-toplevel'
   child.stdin.end()
   promise.then ([stdout, stderr]) ->
@@ -273,8 +277,8 @@ getGitRoot = () ->
 
 # Internal tracking variable and function used for asserting that Perl exists on the system muffin is being run on.
 perlPresent = undefined
-perlError = () -> throw 'You need a perl v5.3 or higher installed to do this with muffin.'
-ensurePerl = () ->
+perlError = -> throw 'You need a perl v5.3 or higher installed to do this with muffin.'
+ensurePerl = ->
   if perlPresent?
     perlError() unless perlPresent
   else
@@ -464,6 +468,11 @@ statFiles = (files, options = {}) ->
       printTable(fields, results)
     ).end()
 
+addWatchDependency = (file) ->
+  return unless muffin._watchDependencies
+  muffin._watchDependencies.push file
+  return
+
 # `compileMap` is an internal helper for taking the passed in options to `muffin.run` and turning strings
 # into useful objects.
 compileMap = (map) ->
@@ -495,10 +504,12 @@ run = (args) ->
     # match any of the files in the array. If so, delete the file, and run the action.
     actionPromises = []
     compiledMap.forEach (map) ->
+      muffin._watchDependencies = []
       for i, file of args.files
         if matches = map.pattern.exec(file)
           delete args.files[i]
           actionPromises.push map.action(matches)
+          muffin._watchDependencies.push file
 
           # Watch the file if the option was given.
           if args.options.watch
@@ -506,19 +517,20 @@ run = (args) ->
               console.error("Can't watch committed versions of files, sorry!")
               process.exit(1)
 
-            do (map, matches) ->
-              ofs.watchFile file, persistent: true, interval: 250, (curr, prev) ->
-                return if curr.mtime.getTime() is prev.mtime.getTime()
-                return if inRebase()
-                q.call(before)
-                .then(-> map.action(matches))
-                .then((result) -> args.after() if args.after)
-                .end()
+            for file in muffin._watchDependencies
+              do (map, matches, file) ->
+                  ofs.watch file, persistent: true, (event) ->
+                    return if event != 'change' || inRebase()
+                    q.call(before)
+                    .then(-> map.action(matches))
+                    .then((result) -> args.after() if args.after)
+                    .end()
 
+      delete muffin._watchDependencies
     q.all(actionPromises).then(->
       args.after() if args.after
     )
   ).end()
 
-for k, v of {run, copyFile, doccoFile, notify, minifyScript, readFile, writeFile, compileString, compileScript, compileTree, exec, extend, statFiles, mkdir_p}
+for k, v of {run, copyFile, doccoFile, notify, minifyScript, readFile, writeFile, compileString, compileScript, compileTree, exec, extend, statFiles, mkdir_p, addWatchDependency}
   exports[k] = v
