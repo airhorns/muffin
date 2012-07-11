@@ -42,7 +42,7 @@ exec = (command, options = {}) ->
   [child, deferred.promise]
 
 # Internal helper function for deciding if the repo is in the midst of a rebase.
-inRebase = -> fs.existsSync('.git/rebase-apply')
+inRebase = -> ofs.existsSync('.git/rebase-apply')
 
 ask = (question, format = /.+/) ->
   stdin = process.stdin
