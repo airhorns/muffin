@@ -215,7 +215,7 @@ compileTree = (root, target, options = {}) ->
   # Do synchronous snocketing for now because there are race conditions within snockets which result in bad dep graphs. Pout.
   depGraph = snockets.scan root, {async: false}
   muffin.addWatchDependency file for file in depGraph.getChain(root)
-  snockets.getConcatenation root, {minify: false, async: false}, compilation.node()
+  snockets.getConcatenation root, {minify: false, async: false}, compilation.makeNodeResolver()
 
   compilation.promise.then (returns) ->
     [contents, concatenationChanged] = returns
@@ -498,7 +498,7 @@ run = (args) ->
   # Run the before callback, and wait till it finishes by wrapping it in a `q.resolve` call to get a promise.
   before = -> q.all [growlCheckPromise, q.resolve(if args.before then args.before() else true)]
 
-  q.call(before).then(->
+  q.fcall(before).then(->
     # Once the before callback has been successfully run, loop over all the pattern -> action pairs, and see if they
     # match any of the files in the array. If so, delete the file, and run the action.
     actionPromises = []
@@ -520,7 +520,7 @@ run = (args) ->
               do (map, matches, file) ->
                   ofs.watch file, persistent: true, (event) ->
                     return if event != 'change' || inRebase()
-                    q.call(before)
+                    q.fcall(before)
                     .then(-> map.action(matches))
                     .then((result) -> args.after() if args.after)
                     .end()
