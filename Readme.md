@@ -5,7 +5,7 @@ A set of handy helpers for your Cakefiles.
 
 ## What you get
 
-A set of generic high level file operations you don't want to implement yourself, like copying files, CoffeeScript compilation, minification, and SLOC counting.
+A set of generic high level file operations you don't want to implement yourself, like copying files, CoffeeScript compilation and compile time requiring, minification, and SLOC counting.
 
 ## Installation
 
@@ -26,7 +26,7 @@ muffin = require 'muffin'
 
   + allows you to define a map of actions to take using certain files, making making Makefile style Cakefiles a bit easier
   + takes this map from you as a set of file to action pairs, where you specify the file as a regex pattern (then run on the source tree), and the action as a Javascript function.
-  + provides a bunch of high level functions to use within those map actions to do real work
+  + provides a bunch of high level functions to use within those map actions to do real work, like compiling trees of CoffeeScript files
   + includes free goodies like file system watching, so that when a file changes the action is re run, the ability to operate on the git stage instead of the current state in the file system, and handy callbacks sprinkled about which deal with weird asynchronous race conditions for you.
 
 ## Reference
@@ -83,7 +83,7 @@ task 'test', 'compile project.js and the tests and run them on the command line'
     options: options
     # Compile the project coffeescript and all the tests into a temporary directory
     map:
-     'src/project.coffee'               : (matches) -> muffin.compileScript(matches[0], "#{tmpdir}/project.js", muffin.extend {notify: first}, options)
+     'src/project.coffee'               : (matches) -> muffin.compileTree(matches[0], "#{tmpdir}/project.js", muffin.extend {notify: first}, options)
      'tests/project/(.+)_test.coffee'   : (matches) -> muffin.compileScript(matches[0], "#{tmpdir}/#{matches[1]}_test.js", muffin.extend {notify: first}, options)
      'tests/project/test_helper.coffee' : (matches) -> muffin.compileScript(matches[0], "#{tmpdir}/test_helper.js", muffin.extend {notify: first}, options)
     after: ->
@@ -127,7 +127,7 @@ Copies the file at `source` to `target` according to options, which gets passed 
 
 Compiles a CoffeeScript file at `source` to JavaScript at `target`. Accepts `bare` as an option, which if true excludes the default closure around the generated JavaScript. `bare` is false by default and it's recommended it remains that way.
 
-    muffin.compileScript(source, target, options = {})
+    muffin.compileTree(source, target, options = {})
 
 Compiles a set of CoffeeScript files with a root at `source` to JavaScript at `target`. This uses the [snockets](https://github.com/TrevorBurnham/snockets) library which allows you to specify dependencies among files using the `#= require otherfile` syntax. See the [snockets documentation](https://github.com/TrevorBurnham/snockets) for more information.
 
