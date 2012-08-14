@@ -99,7 +99,7 @@ task 'test', 'compile project.js and the tests and run them on the command line'
 
 ## Reference
 
-Below are some notes on the helper functions available for use in the map actions. Note that `muffin` internally uses [`q`](https://github.com/kriskowal/q "q on github"), a JavaScript promise library which makes it really easy to interface with the asynchronous scheduling piece of `muffin`. If your action function is asynchronous, which it almost always will be, you must return a `q.Promise` from your action function. By doing this, `muffin` can ensure the `after` callbacks do in fact run after all the actions have been completed. 
+Below are some notes on the helper functions available for use in the map actions. Note that `muffin` internally uses [`q`](https://github.com/kriskowal/q "q on github"), a JavaScript promise library which makes it really easy to interface with the asynchronous scheduling piece of `muffin`. If your action function is asynchronous, which it almost always will be, you must return a `q.Promise` from your action function. By doing this, `muffin` can ensure the `after` callbacks do in fact run after all the actions have been completed.
 
 All the functions below return 'q.Promise' objects, so using them as they are used in the examples above works quite well.
 
@@ -112,7 +112,7 @@ All the methods below accept an `options` parameter, which you can just pass in 
 The methods:
 
     muffin.readFile(source, options = {})
- 
+
 Reads a file in from the source, returning a promise which resolves to the contents of the file.
 
     muffin.writeFile(target, data, options = {})
@@ -127,9 +127,13 @@ Copies the file at `source` to `target` according to options, which gets passed 
 
 Compiles a CoffeeScript file at `source` to JavaScript at `target`. Accepts `bare` as an option, which if true excludes the default closure around the generated JavaScript. `bare` is false by default and it's recommended it remains that way.
 
+    muffin.compileScript(source, target, options = {})
+
+Compiles a set of CoffeeScript files with a root at `source` to JavaScript at `target`. This uses the `[snockets](https://github.com/TrevorBurnham/snockets)` library which allows you to specify dependencies among files using the `#= require otherfile` syntax. See the [snockets documentation](https://github.com/TrevorBurnham/snockets) for more information.
+
     muffin.minifyScript(source, options = {})
 
-Minifies a JavaScript file at `source` into a `min.js` file in the same directory using (Uglify.js)[https://github.com/mishoo/UglifyJS].
+Minifies a JavaScript file at `source` into a `min.js` file in the same directory using [Uglify.js](https://github.com/mishoo/UglifyJS).
 
     muffin.statFiles(files, options = {})
 
