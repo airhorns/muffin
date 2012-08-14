@@ -129,7 +129,7 @@ Compiles a CoffeeScript file at `source` to JavaScript at `target`. Accepts `bar
 
     muffin.compileScript(source, target, options = {})
 
-Compiles a set of CoffeeScript files with a root at `source` to JavaScript at `target`. This uses the `[snockets](https://github.com/TrevorBurnham/snockets)` library which allows you to specify dependencies among files using the `#= require otherfile` syntax. See the [snockets documentation](https://github.com/TrevorBurnham/snockets) for more information.
+Compiles a set of CoffeeScript files with a root at `source` to JavaScript at `target`. This uses the [snockets](https://github.com/TrevorBurnham/snockets) library which allows you to specify dependencies among files using the `#= require otherfile` syntax. See the [snockets documentation](https://github.com/TrevorBurnham/snockets) for more information.
 
     muffin.minifyScript(source, options = {})
 
@@ -141,7 +141,7 @@ Logs SLOC counts to the console for all the files included in the `files` (`Arra
 
     muffin.doccoFile(file, options)
 
-Generates (Docco)[https://github.com/jashkenas/docco] documentation for the JavaScript or CoffeeScript source file at `file`. Docco without choice writes to a `docs` folder.
+Generates [Docco](https://github.com/jashkenas/docco) documentation for the JavaScript or CoffeeScript source file at `file`. Docco without choice writes to a `docs` folder.
 
     muffin.notify(filename, message, error = false)
 
@@ -189,7 +189,7 @@ The annotated source code for muffin can be found [here](http://hornairs.github.
 
 # License
 
-Copyright (C) 2011 by Jaded Pixel Inc.
+Copyright (C) 2012 by Jaded Pixel Inc.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
