@@ -358,7 +358,7 @@ _statFiles = (files, options = {}) ->
 
   # Ensure any errors thrown during the join of the statting aren't swallowed by marking the promises as no longer
   # chainable.
-  promise.end() for promise in promises
+  promise.done() for promise in promises
 
   # For every file's stats (or promise thereof), print out the row in the table. Do this by first figuring out
   # what the widest value in each column is, and then printing while padding all the shorter values out until they
@@ -460,12 +460,12 @@ statFiles = (files, options = {}) ->
             for ref in [refA, refB]
               tableFields.push "#{field} at #{ref}"
         )
-    ).end()
+    ).done()
   else
     fields = options.fields || ['filename', 'filetype', 'sloc', 'size']
     _statFiles(files, options).then((results) ->
       printTable(fields, results)
-    ).end()
+    ).done()
 
 addWatchDependency = (file) ->
   return unless muffin._watchDependencies
@@ -523,13 +523,13 @@ run = (args) ->
                     q.fcall(before)
                     .then(-> map.action(matches))
                     .then((result) -> args.after() if args.after)
-                    .end()
+                    .done()
 
       delete muffin._watchDependencies
     q.all(actionPromises).then(->
       args.after() if args.after
     )
-  ).end()
+  ).done()
 
 for k, v of {run, copyFile, doccoFile, notify, minifyScript, readFile, writeFile, compileString, compileScript, compileTree, exec, extend, statFiles, mkdir_p, addWatchDependency}
   exports[k] = v
