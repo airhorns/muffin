@@ -6,7 +6,7 @@
 
 CoffeeScript     = require 'coffee-script'
 q                = require 'q'
-fs               = require 'q-fs'
+fs               = require 'q-io/fs'
 ofs              = require 'fs'
 path             = require 'path'
 glob             = require 'glob'

@@ -24,3 +24,6 @@ task 'doc', 'autogenerate docco anotated source and node IDL files', (options) -
       'src/muffin.coffee'       : (matches) -> muffin.doccoFile(matches[0], options)
 
 task 'test', ->
+  invoke 'build'
+  invoke 'stats'
+  invoke 'doc'
