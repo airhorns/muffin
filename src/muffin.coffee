@@ -251,21 +251,36 @@ doccoFile = (source, options = {}) ->
 
 minifyScript = (source, options = {}) ->
   # Grab a reference to uglify. This isn't always globablly required since not everyone will minimize.
-  {parser, uglify} = require("uglify-js")
+  UglifyJS = require("uglify-js")
 
   # Read the file and then step through the transformations of the AST.
   readFile(source, options).then (original) ->
-    ast = parser.parse(original, options.parse)        # Parse original JS code and get the initial AST.
-    ast = options.transform(ast) if options.transform? # Do any custom transforms the user asks for
-    ast = uglify.ast_mangle(ast, options.ast_mangle)   # Get a new AST with mangled names.
-    ast = uglify.ast_squeeze(ast, options.ast_squeeze) # Get an AST with compression optimizations.
-    final = uglify.gen_code(ast, options.gen_code)
+
+    # Parse original JS code and get the initial AST.
+    toplevel = UglifyJS.parse(original, {filename: source})
+    toplevel.figure_out_scope()
+
+    # Do any custom transforms the user asks for
+    toplevel = options.transform(toplevel) if options.transform?
+
+    # Compress and apply the transformation
+    sq = UglifyJS.Compressor({warnings: false})
+    toplevel = toplevel.transform(sq)
+
+    # Mangle names
+    toplevel.figure_out_scope();
+    toplevel.compute_char_frequency();
+    toplevel.mangle_names(options.mangle);
+
+    stream = UglifyJS.OutputStream();
+    toplevel.print(stream)
     finalPath = source.split('.')
     finalPath.pop()
     finalPath.push('min.js')
+    finalCode = stream + ""
     # Write out the final code to the same file with a `min.js` extension instead of just `.js`. This
     # is also returned as a promise for chaining if need be.
-    return writeFile(finalPath.join('.'), final, options).then(-> final)
+    return writeFile(finalPath.join('.'), finalCode, options).then(-> finalCode)
 
 # Internal function for finding the git root
 getGitRoot = ->

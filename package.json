@@ -18,7 +18,7 @@
   "dependencies": {
     "q": "~>0.9.2",
     "q-io": "~>1.6.4",
-    "coffee-script": "~1.6.0",
+    "coffee-script": "~>1.6.2",
     "glob": "~>3.1.21",
     "uglify-js": "~>2.2.5",
     "prompt": "~>0.2.9",
