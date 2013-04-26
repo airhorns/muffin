@@ -368,7 +368,7 @@ _statFiles = (files, options = {}) ->
   # both return promises which we join. For each file (and joined promise), ensure the promise resolves to
   # the merged stats objects from both helpers.
   promises = files.map (file) ->
-    q.join clocFile(file), statFile(file), (clocstats, filestats) ->
+    q.spread [clocFile(file), statFile(file)], (clocstats, filestats) ->
       extend clocstats, filestats
 
   # Ensure any errors thrown during the join of the statting aren't swallowed by marking the promises as no longer

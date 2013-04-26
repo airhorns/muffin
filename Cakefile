@@ -14,7 +14,7 @@ task 'build', 'compile muffin', (options) ->
   console.log "Watching src..." if options.watch
 
 task 'stats', 'print source code stats', (options) ->
-  muffin.statFiles(glob.globSync('./src/**/*').concat(glob.globSync('./lib/**/*')), options)
+  muffin.statFiles(glob.sync('./src/**/*').concat(glob.sync('./lib/**/*')), options)
 
 task 'doc', 'autogenerate docco anotated source and node IDL files', (options) ->
   muffin.run

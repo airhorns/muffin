@@ -1,23 +1,1447 @@
-<!DOCTYPE html>  <html> <head>   <title>muffin.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               muffin.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <h2>muffin.js: handy helpers for building cakefiles</h2>
+<!DOCTYPE html>
 
-<p>Licensed under the MIT License, excluding cloc.pl
-Includes cloc.pl from http://cloc.sourceforge.net/, licensed under GPL V2</p>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Require Q for all the handy promise based business</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Require <code>child_process</code> and grab a reference to it so the identifier <code>exec</code> is free.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Simple variadic extend</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Promise based version of <code>exec</code>.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>Wrap the execution of the original <code>exec</code> function in a deferred.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Return both the child process (for writing to stdin) and the promise.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>Internal helper function for deciding if the repo is in the midst of a rebase.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>Notifies the user of a success or error during compilation</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>If notifying about an error, make sure any errors actually reference the file being
-compiled.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>Always log any autogenerated messages as well as the error message to the console</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>Growl the successful action (usually a compilation) to the user, and always log it to the console as well.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>Growl if we can, or</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>return an already fufilled promise if not</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>Read the file from the git index if we're using the stage as the files being caked,
-or otherwise use <code>q-fs</code> to read the file and return a promise.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>Write the file to the git index if we're using the stage as the files being caked,
-or otherwise use <code>q-fs</code> to write while returning a promise.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>With git, it takes two stages to stage a file. We write the object to <code>git hash-object</code> over
+<html>
+<head>
+  <title>muffin.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>muffin.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h2">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <h2>muffin.js: handy helpers for building cakefiles</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Licensed under the MIT License, excluding cloc.pl
+Includes cloc.pl from <a href="http://cloc.sourceforge.net/">http://cloc.sourceforge.net/</a>, licensed under GPL V2</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>CoffeeScript     = require <span class="string">'coffee-script'</span>
+q                = require <span class="string">'q'</span>
+fs               = require <span class="string">'q-io/fs'</span>
+ofs              = require <span class="string">'fs'</span>
+path             = require <span class="string">'path'</span>
+glob             = require <span class="string">'glob'</span>
+temp             = require <span class="string">'temp'</span>
+Snockets         = require <span class="string">'snockets'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Require <code>child_process</code> and grab a reference to it so the identifier <code>exec</code> is free.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>{spawn, exec}    = require <span class="string">'child_process'</span>
+orgExec          = exec
+
+muffin           = exports</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Simple variadic extend</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="function"><span class="title">extend</span></span> = (onto, others...) -&gt;
+  result = onto
+  <span class="keyword">for</span> o <span class="keyword">in</span> others
+    <span class="keyword">for</span> k,v <span class="keyword">of</span> o
+      result[k] = v
+  result</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Promise based version of <code>exec</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="function"><span class="title">exec</span></span> = (command, options = {}) -&gt;
+  deferred = q.defer()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Wrap the execution of the original <code>exec</code> function in a deferred.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  child = orgExec(command, options, (error, stdout, stderr) -&gt;
+    <span class="keyword">if</span> error?
+      deferred.reject(error)
+    <span class="keyword">else</span>
+      deferred.resolve([stdout, stderr])
+  )</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Return both the child process (for writing to stdin) and the promise.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  [child, deferred.promise]</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Internal helper function for deciding if the repo is in the midst of a rebase.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="function"><span class="title">inRebase</span></span> = -&gt; ofs.existsSync(<span class="string">'.git/rebase-apply'</span>)
+
+<span class="function"><span class="title">ask</span></span> = (question, format = <span class="regexp">/.+/</span>) -&gt;
+  stdin = process.stdin
+  stdout = process.stdout
+  deferred = q.defer()
+
+  stdin.resume()
+  stdout.write(question + <span class="string">": "</span>)
+
+  stdin.once <span class="string">'data'</span>, (data) -&gt;
+    stdin.pause()
+    data = data.toString().trim()
+    <span class="keyword">if</span> format.test(data)
+      deferred.resolve data
+    <span class="keyword">else</span>
+      stdout.write <span class="string">"It should match: <span class="subst">#{format}</span>\n"</span>
+      deferred.resolve ask(question, format)
+
+  deferred.promise</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>Notifies the user of a success or error during compilation</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="function"><span class="title">notify</span></span> = (source, origMessage, options = {}) -&gt;
+  <span class="keyword">if</span> options.notify != <span class="literal">false</span>
+    <span class="keyword">if</span> options.error</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>If notifying about an error, make sure any errors actually reference the file being
+compiled.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      basename = source.toString().replace(<span class="regexp">/^.*[\/\\]/</span>, <span class="string">''</span>)
+      <span class="keyword">if</span> m = origMessage.match <span class="regexp">/Parse error on line (\d+)/</span>
+        message = <span class="string">"Parse error in <span class="subst">#{basename}</span>\non line <span class="subst">#{m[<span class="number">1</span>]}</span>."</span>
+      <span class="keyword">else</span>
+        message = <span class="string">"Error in <span class="subst">#{basename}</span>."</span>
+      command = growlCommand <span class="string">'-p'</span>, <span class="string">'2'</span>, <span class="string">'-t'</span>, <span class="string">"\"Action failed\""</span>, <span class="string">'-m'</span>, <span class="string">"\"<span class="subst">#{message}</span>\""</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>Always log any autogenerated messages as well as the error message to the console</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      console.error message
+      console.error origMessage
+    <span class="keyword">else</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>Growl the successful action (usually a compilation) to the user, and always log it to the console as well.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      command = growlCommand <span class="string">'-n'</span>, <span class="string">'Cake'</span>, <span class="string">'-p'</span>, <span class="string">'-1'</span>, <span class="string">'-t'</span>, <span class="string">"\"Action Succeeded\""</span>, <span class="string">'-m'</span>, <span class="string">"\"<span class="subst">#{source}</span>\""</span>
+      console.log origMessage</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>Growl if we can</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">if</span> growlAvailable
+      [child, promise] = exec command
+      child.stdin.end()
+      <span class="keyword">return</span> promise
+  q.resolve(<span class="literal">true</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Recursively creates directories.
+Borrowed from Bruno Pedro
+<a href="https://github.com/bpedro/node-fs">https://github.com/bpedro/node-fs</a></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="function"><span class="title">mkdir_p</span></span> = (filePath, mode = <span class="number">0</span>o777, callback, position = <span class="number">0</span>) -&gt;
+  parts = path.normalize(filePath).split(<span class="string">"/"</span>)
+  <span class="keyword">if</span> parts[<span class="number">0</span>] == <span class="string">''</span>
+    parts.shift()
+    parts[<span class="number">0</span>] = <span class="string">"/<span class="subst">#{parts[<span class="number">0</span>]}</span>"</span>
+  <span class="keyword">if</span> position &gt;= parts.length
+    <span class="keyword">if</span> callback
+      <span class="keyword">return</span> callback()
+    <span class="keyword">else</span>
+      <span class="keyword">return</span> <span class="literal">true</span>
+
+  directory = parts.slice(<span class="number">0</span>, position + <span class="number">1</span>).join(<span class="string">"/"</span>)
+
+  ofs.stat directory, (err) -&gt;
+    <span class="keyword">if</span> err == <span class="literal">null</span>
+      mkdir_p filePath, mode, callback, position + <span class="number">1</span>
+    <span class="keyword">else</span>
+      ofs.mkdir directory, mode, (err) -&gt;
+        <span class="keyword">if</span> err &amp;&amp; !(err.message.match <span class="regexp">/EEXIST/</span>)
+          <span class="keyword">if</span> callback
+            callback err
+          <span class="keyword">else</span>
+            <span class="keyword">throw</span> err
+        <span class="keyword">else</span>
+          mkdir_p filePath, mode, callback, position + <span class="number">1</span>
+
+<span class="function"><span class="title">readFile</span></span> = (file, options = {}) -&gt;
+  deferred = q.defer()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>Read the file from the git index if we&#39;re using the stage as the files being caked,
+or otherwise use <code>q-fs</code> to read the file and return a promise.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">if</span> runOptions.commit
+    [child, promise] = exec <span class="string">"git show :<span class="subst">#{file}</span>"</span>
+    child.stdin.setEncoding(<span class="string">'utf8'</span>)
+    child.stdin.end()
+    q.<span class="keyword">when</span> promise
+    , (stdout, stderr) -&gt;
+      lines = stdout.toString().split(<span class="string">'\n'</span>)
+      lines.pop()
+      str = lines.join(<span class="string">'\n'</span>)
+      deferred.resolve(str)
+    , (reason) -&gt;
+      handleFileError(file, reason, options)
+  <span class="keyword">else</span>
+    fs.read(file).<span class="keyword">then</span>((contents) -&gt;
+      deferred.resolve(contents.toString())
+    , (reason) -&gt;
+      handleFileError(file, reason, options)
+    )
+
+  deferred.promise
+
+<span class="function"><span class="title">writeFile</span></span> = (file, data, options = {}) -&gt;
+  mode = options.mode || <span class="number">0</span>o644</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>Write the file to the git index if we&#39;re using the stage as the files being caked,
+or otherwise use <code>q-fs</code> to write while returning a promise.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">if</span> runOptions.commit</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>With git, it takes two stages to stage a file. We write the object to <code>git hash-object</code> over
 stdin and wait for it to spit a sha back out. We then update the index with the new hashed
-file using the sha as a reference and in the mode passed in.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>Write the file, and then chmod the file using <code>q</code> promises.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>Make the common permissions error look a bit nicer.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>Read the file at the source and then write the file at the target</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>Handy promise based file error handler, which is a simple wrapper for <code>notify</code></p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>Following 2 functions are stolen from Jitter, https://github.com/TrevorBurnham/Jitter/blob/master/src/jitter.coffee
-Compiles a script to a destination</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <p>Generate a command to growl</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <p>Check if growl is available so we can growl notifications only if growl is present</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-25">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-25">&#182;</a>               </div>               <p>Just tell docco to generate the one file by using it's command line helper</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-26">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-26">&#182;</a>               </div>               <p>Notify the user if any errors occured.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-27">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-27">&#182;</a>               </div>               <p>Grab a reference to uglify. This isn't always globablly required since not everyone will minimize.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-28">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-28">&#182;</a>               </div>               <p>Read the file and then step through the transformations of the AST.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-29">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-29">&#182;</a>               </div>               <p>Write out the final code to the same file with a <code>min.js</code> extension instead of just <code>.js</code>. This
-is also returned as a promise for chaining if need be.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-30">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-30">&#182;</a>               </div>               <p>Internal function for finding the git root</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-31">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-31">&#182;</a>               </div>               <p>Internal tracking variable and function used for asserting that Perl exists on the system muffin is being run on.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-32">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-32">&#182;</a>               </div>               <p>Grab absolute references to the cloc file and language definition (an extension of the default one but including Coffeescript)</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-33">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-33">&#182;</a>               </div>               <p>Use <code>cloc</code> in the deps dir to count the SLOC in the file.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-34">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-34">&#182;</a>               </div>               <p>Grab the output of <code>cloc</code> in CSV.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-35">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-35">&#182;</a>               </div>               <p>Split up the output into headers and CSV by splitting by double newline, and then into rows
-by splitting by newline.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-36">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-36">&#182;</a>               </div>               <p>Discard the row of column names, discard the empty newline at the end, and then split each row
-into comma delimited columns.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-37">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-37">&#182;</a>               </div>               <p>Use the first row since we've only passed one file to <code>cloc</code>.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-38">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-38">&#182;</a>               </div>               <p>Use <code>fs.stat</code> to grab the filesize and modified time of a file.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-39">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-39">&#182;</a>               </div>               <p>Convert the filesize (which comes in in bytes) into a more human readable form by
-dividing by 1024 for each unit.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-40">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-40">&#182;</a>               </div>               <p>Round off the final value to two digits and set the size to a human readable string.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-41">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-41">&#182;</a>               </div>               <p>For every file to be statted, <code>cloc</code> and <code>fs.stat</code> them both using the two respective helpers. These
+file using the sha as a reference and in the mode passed in.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    [child, promise] = exec <span class="string">"git hash-object --stdin -w"</span>
+    child.stdin.write(data)
+    child.stdin.end()
+
+    promise.<span class="keyword">then</span> ([stdout, stderr]) -&gt;
+      sha = stdout.substr(<span class="number">0</span>,<span class="number">40</span>)
+      [subchild, subpromise] = exec <span class="string">"git update-index --add --cacheinfo 100<span class="subst">#{mode.toString(<span class="number">8</span>)}</span> <span class="subst">#{sha}</span> <span class="subst">#{file}</span>"</span>
+      <span class="keyword">return</span> subpromise
+
+    <span class="keyword">return</span> promise
+  <span class="keyword">else</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>Write the file, and then chmod the file using <code>q</code> promises.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    write = q.defer()
+
+    mkdir_p path.dirname(file), <span class="number">0</span>o755, (err) -&gt;
+      <span class="keyword">return</span> write.reject(err) <span class="keyword">if</span> err
+      ofs.writeFile file, data, <span class="string">"UTF-8"</span>, (err) -&gt;
+        <span class="keyword">return</span> write.reject(err) <span class="keyword">if</span> err
+        ofs.chmod file, mode, (err) -&gt;
+          <span class="keyword">return</span> write.reject(err) <span class="keyword">if</span> err
+          write.resolve(<span class="literal">true</span>)
+
+    <span class="keyword">return</span> write.promise
+
+<span class="function"><span class="title">copyFile</span></span> = (source, target, options = {}) -&gt;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>Read the file at the source and then write the file at the target</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  readFile(source, options).<span class="keyword">then</span> (contents) -&gt;
+    writeFile(target, contents, options).<span class="keyword">then</span> -&gt;
+      notify(source, <span class="string">"Moved <span class="subst">#{source}</span> to <span class="subst">#{target}</span> successfully"</span>, options)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p>Handy promise based file error handler, which is a simple wrapper for <code>notify</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="function"><span class="title">handleFileError</span></span> = (file, err, options = {}) -&gt;
+  notify(file, err.message, extend({}, options, {error: <span class="literal">true</span>})).<span class="keyword">then</span> -&gt;
+    <span class="keyword">throw</span> err</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p>Compiles a string to a destination</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="function"><span class="title">compileString</span></span> = (coffeeSource, options = {}) -&gt;
+  compiled = CoffeeScript.compile coffeeSource, {bare: options?.bare}
+  <span class="keyword">if</span> options.hashbang
+    compiled = <span class="string">"#!/usr/bin/env node\n\n"</span> + compiled
+  compiled</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <p>Compiles a script to a destination</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="function"><span class="title">compileScript</span></span> = (source, target, options = {}) -&gt;
+  readFile(source, options).<span class="keyword">then</span> (data) -&gt;
+    <span class="keyword">try</span>
+      js = compileString(data, options)
+      writeFile(target, js, options)
+      .<span class="keyword">then</span>(-&gt; notify(source, <span class="string">"Compiled <span class="subst">#{source}</span> to <span class="subst">#{target}</span> successfully"</span>))
+      .<span class="keyword">then</span>(-&gt; js)
+    <span class="keyword">catch</span> err
+      handleFileError target, err, options</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <p>Compile a tree of files who&#39;s dependencies are expressed via snockets</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>snockets = <span class="keyword">new</span> Snockets
+<span class="function"><span class="title">compileTree</span></span> = (root, target, options = {}) -&gt;
+  compilation = q.defer()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <p>Do synchronous snocketing for now because there are race conditions within snockets which result in bad dep graphs. Pout.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  depGraph = snockets.scan root, {async: <span class="literal">false</span>}
+  muffin.addWatchDependency file <span class="keyword">for</span> file <span class="keyword">in</span> depGraph.getChain(root)
+  snockets.getConcatenation root, {minify: <span class="literal">false</span>, async: <span class="literal">false</span>}, compilation.makeNodeResolver()
+
+  compilation.promise.<span class="keyword">then</span> (returns) -&gt;
+    [contents, concatenationChanged] = returns
+    writeFile(target, contents, options)
+    .<span class="keyword">then</span>(-&gt; notify(root, <span class="string">"Compiled tree at <span class="subst">#{root}</span> to <span class="subst">#{target}</span> successfully"</span>))
+    .<span class="keyword">then</span>(-&gt; contents)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              <p>Generate a command to growl</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>growlImagePath = path.resolve(path.join(__dirname, <span class="string">'logo.png'</span>))
+<span class="function"><span class="title">growlCommand</span></span> = (args...) -&gt;
+  args.unshift(<span class="string">'growlnotify'</span>, <span class="string">'-n'</span>, <span class="string">'Cake'</span>, <span class="string">'--image'</span>, growlImagePath)
+  args.join(<span class="string">' '</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-26">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-26">&#182;</a>
+              </div>
+              <p>Check if growl is available so we can growl notifications only if growl is present</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>growlAvailable = <span class="literal">false</span>
+[ _, growlCheckPromise] = exec <span class="string">'which growlnotify'</span>
+
+growlCheckPromise = q.<span class="keyword">when</span>(growlCheckPromise, ([stdout, stderr]) -&gt;
+  growlAvailable = stderr.toString().length == <span class="number">0</span>
+  <span class="literal">true</span>
+, (reason) -&gt;
+  growlAvailable = <span class="literal">false</span>
+  <span class="literal">false</span>
+)
+
+<span class="function"><span class="title">doccoFile</span></span> = (source, options = {}) -&gt;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-27">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-27">&#182;</a>
+              </div>
+              <p>Just tell docco to generate the one file by using it&#39;s command line helper</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  [child, promise] = exec(<span class="string">"docco <span class="subst">#{source}</span>"</span>)
+  <span class="keyword">return</span> promise.<span class="keyword">then</span> ([stdout, stderr]) -&gt;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-28">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-28">&#182;</a>
+              </div>
+              <p>Notify the user if any errors occured.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    notify source, stdout.toString() <span class="keyword">if</span> stdout.toString().length &gt; <span class="number">0</span>
+    notify source, stderr.toString(), <span class="literal">true</span> <span class="keyword">if</span> stderr.toString().length &gt; <span class="number">0</span>
+
+<span class="function"><span class="title">minifyScript</span></span> = (source, options = {}) -&gt;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-29">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-29">&#182;</a>
+              </div>
+              <p>Grab a reference to uglify. This isn&#39;t always globablly required since not everyone will minimize.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  UglifyJS = require(<span class="string">"uglify-js"</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-30">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-30">&#182;</a>
+              </div>
+              <p>Read the file and then step through the transformations of the AST.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  readFile(source, options).<span class="keyword">then</span> (original) -&gt;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-31">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-31">&#182;</a>
+              </div>
+              <p>Parse original JS code and get the initial AST.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    toplevel = UglifyJS.parse(original, {filename: source})
+    toplevel.figure_out_scope()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-32">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-32">&#182;</a>
+              </div>
+              <p>Do any custom transforms the user asks for</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    toplevel = options.transform(toplevel) <span class="keyword">if</span> options.transform?</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-33">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-33">&#182;</a>
+              </div>
+              <p>Compress and apply the transformation</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    sq = UglifyJS.Compressor({warnings: <span class="literal">false</span>})
+    toplevel = toplevel.transform(sq)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-34">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-34">&#182;</a>
+              </div>
+              <p>Mangle names</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    toplevel.figure_out_scope();
+    toplevel.compute_char_frequency();
+    toplevel.mangle_names(options.mangle);
+
+    stream = UglifyJS.OutputStream();
+    toplevel.print(stream)
+    finalPath = source.split(<span class="string">'.'</span>)
+    finalPath.pop()
+    finalPath.push(<span class="string">'min.js'</span>)
+    finalCode = stream + <span class="string">""</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-35">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-35">&#182;</a>
+              </div>
+              <p>Write out the final code to the same file with a <code>min.js</code> extension instead of just <code>.js</code>. This
+is also returned as a promise for chaining if need be.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">return</span> writeFile(finalPath.join(<span class="string">'.'</span>), finalCode, options).<span class="keyword">then</span>(-&gt; finalCode)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-36">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-36">&#182;</a>
+              </div>
+              <p>Internal function for finding the git root</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="function"><span class="title">getGitRoot</span></span> = -&gt;
+  [child, promise] = exec <span class="string">'git rev-parse --show-toplevel'</span>
+  child.stdin.end()
+  promise.<span class="keyword">then</span> ([stdout, stderr]) -&gt;
+    stdout.toString().trim()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-37">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-37">&#182;</a>
+              </div>
+              <p>Internal tracking variable and function used for asserting that Perl exists on the system muffin is being run on.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>perlPresent = <span class="literal">undefined</span>
+<span class="function"><span class="title">perlError</span></span> = -&gt; <span class="keyword">throw</span> <span class="string">'You need a perl v5.3 or higher installed to do this with muffin.'</span>
+<span class="function"><span class="title">ensurePerl</span></span> = -&gt;
+  <span class="keyword">if</span> perlPresent?
+    perlError() <span class="keyword">unless</span> perlPresent
+  <span class="keyword">else</span>
+    orgExec <span class="string">'perl --version'</span>, (error, stdout, stderr) -&gt;
+      <span class="keyword">if</span> error?
+        perlPresent = <span class="literal">false</span>
+        perlError()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-38">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-38">&#182;</a>
+              </div>
+              <p>Grab absolute references to the cloc file and language definition (an extension of the default one but including Coffeescript)</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>clocPath = path.normalize( __dirname + <span class="string">"/../deps/cloc.pl"</span> )
+langDefPath = path.normalize( __dirname + <span class="string">"/../deps/cloc_lang_def.txt"</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-39">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-39">&#182;</a>
+              </div>
+              <p>Use <code>cloc</code> in the deps dir to count the SLOC in the file.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="function"><span class="title">clocFile</span></span> = (filename) -&gt;
+  ensurePerl()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-40">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-40">&#182;</a>
+              </div>
+              <p>Grab the output of <code>cloc</code> in CSV.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  [child, promise] = exec <span class="string">"<span class="subst">#{clocPath}</span> --csv --read-lang-def=<span class="subst">#{langDefPath}</span> <span class="subst">#{filename}</span>"</span>
+
+  q.<span class="keyword">when</span> promise, ([csv, stderr]) -&gt;
+    <span class="keyword">throw</span> stderr.toString() <span class="keyword">if</span> stderr.toString().length &gt; <span class="number">0</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-41">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-41">&#182;</a>
+              </div>
+              <p>Split up the output into headers and CSV by splitting by double newline, and then into rows
+by splitting by newline.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    [discard, csv] = csv.split(<span class="string">"\n\n"</span>)
+    <span class="keyword">if</span> !csv
+      <span class="keyword">return</span> {
+        filename: filename
+        filetype: path.extname(filename).slice(<span class="number">1</span>)
+        blank: <span class="string">"-"</span>
+        comment: <span class="string">"-"</span>
+        sloc: <span class="string">"-"</span>
+      }
+    rows = csv.split(<span class="string">"\n"</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-42">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-42">&#182;</a>
+              </div>
+              <p>Discard the row of column names, discard the empty newline at the end, and then split each row
+into comma delimited columns.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    names = rows.shift()
+    rows.pop()
+    rows = rows.map (row) -&gt; row.split(<span class="string">','</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-43">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-43">&#182;</a>
+              </div>
+              <p>Use the first row since we&#39;ve only passed one file to <code>cloc</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    row = rows[<span class="number">0</span>]
+
+    <span class="keyword">return</span> {
+      filename: filename
+      filetype: row[<span class="number">1</span>]
+      blank: row[<span class="number">2</span>]
+      comment: row[<span class="number">3</span>]
+      sloc: row[<span class="number">4</span>]
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-44">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-44">&#182;</a>
+              </div>
+              <p>Use <code>fs.stat</code> to grab the filesize and modified time of a file.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="function"><span class="title">statFile</span></span> = (filename) -&gt;
+  q.<span class="keyword">when</span> fs.stat(filename), (stats) -&gt;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-45">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-45">&#182;</a>
+              </div>
+              <p>Convert the filesize (which comes in in bytes) into a more human readable form by
+dividing by 1024 for each unit.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    size = stats.size
+    units = [<span class="string">"bytes"</span>, <span class="string">"KB"</span>, <span class="string">"MB"</span>, <span class="string">"GB"</span>]
+    <span class="keyword">for</span> unit <span class="keyword">in</span> units
+      <span class="keyword">break</span> <span class="keyword">if</span> size &lt; <span class="number">1024</span>
+      size = size / <span class="number">1024</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-46">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-46">&#182;</a>
+              </div>
+              <p>Round off the final value to two digits and set the size to a human readable string.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    size = <span class="string">"<span class="subst">#{(Math.round(size*<span class="number">100</span>)/<span class="number">100</span>).toFixed(<span class="number">2</span>)}</span> <span class="subst">#{unit}</span>"</span>
+
+    <span class="keyword">return</span> {
+      size: size
+      modified: stats.mtime
+      filename: filename
+    }
+
+<span class="function"><span class="title">_statFiles</span></span> = (files, options = {}) -&gt;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-47">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-47">&#182;</a>
+              </div>
+              <p>For every file to be statted, <code>cloc</code> and <code>fs.stat</code> them both using the two respective helpers. These
 both return promises which we join. For each file (and joined promise), ensure the promise resolves to
-the merged stats objects from both helpers.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-42">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-42">&#182;</a>               </div>               <p>Ensure any errors thrown during the join of the statting aren't swallowed by marking the promises as no longer
-chainable.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-43">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-43">&#182;</a>               </div>               <p>For every file's stats (or promise thereof), print out the row in the table. Do this by first figuring out
+the merged stats objects from both helpers.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  promises = files.map (file) -&gt;
+    q.spread [clocFile(file), statFile(file)], (clocstats, filestats) -&gt;
+      extend clocstats, filestats</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-48">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-48">&#182;</a>
+              </div>
+              <p>Ensure any errors thrown during the join of the statting aren&#39;t swallowed by marking the promises as no longer
+chainable.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  promise.done() <span class="keyword">for</span> promise <span class="keyword">in</span> promises</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-49">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-49">&#182;</a>
+              </div>
+              <p>For every file&#39;s stats (or promise thereof), print out the row in the table. Do this by first figuring out
 what the widest value in each column is, and then printing while padding all the shorter values out until they
-reach the same length.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-44">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-44">&#182;</a>               </div>               <p>Add the headers to the top of the table.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-45">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-45">&#182;</a>               </div>               <p>Figure out how wide each column must be, keyed by integer column index. Note that the header row is included
-in the fields array here because a header may be the widest cell in the column.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-46">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-46">&#182;</a>               </div>               <p>Print out each row of results. Use a mutable array buffer which is then joined so new strings aren't created with a
-bunch of += ops.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-47">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-47">&#182;</a>               </div>               <p>Logs a stats about files to the console for inspection.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-48">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-48">&#182;</a>               </div>               <p>If given a string, glob it to expand any wildcards.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-49">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-49">&#182;</a>               </div>               <p>If we're comparing two shas, we need to check the two shas out somewhere else, and run the stats on all those files</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-50">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-50">&#182;</a>               </div>               <p>Get the two git refs we are comparing</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-51">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-51">&#182;</a>               </div>               <p>Get the root of the git repository</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-52">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-52">&#182;</a>               </div>               <p>Clone each root to a temporary directory and check out the given ref</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-53">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-53">&#182;</a>               </div>               <p>Get an array of file paths relative to this temporary checkout</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-54">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-54">&#182;</a>               </div>               <p>Stat the temporary files, and once the details come in, augment them with the original file's details</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-55">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-55">&#182;</a>               </div>               <p>Wait for all the clones and statting to finish.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-56">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-56">&#182;</a>               </div>               <p>Build a table key'd by the original filename</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-57">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-57">&#182;</a>               </div>               <p>Revert to the original filename</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-58">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-58">&#182;</a>               </div>               <p>Grab a list of the table fields</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-59">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-59">&#182;</a>               </div>               <p><code>compileMap</code> is an internal helper for taking the passed in options to <code>muffin.run</code> and turning strings
-into useful objects.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-60">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-60">&#182;</a>               </div>               <p>Store a reference to the options that muffin was run with so we can ensure that none get lost if they don't get passed in by the user.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-61">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-61">&#182;</a>               </div>               <p>Grab the glob if not given by globbing a default string, globbing a given string, or globbing the array of given strings.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-62">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-62">&#182;</a>               </div>               <p>Save the reference to this run's options. Unfortuantly this renders muffin not many run safe. Bummer, for now.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-63">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-63">&#182;</a>               </div>               <p>Run the before callback, and wait till it finishes by wrapping it in a <code>q.ref</code> call to get a promise.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-64">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-64">&#182;</a>               </div>               <p>Once the before callback has been successfully run, loop over all the pattern -> action pairs, and see if they
-match any of the files in the array. If so, delete the file, and run the action.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-65">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-65">&#182;</a>               </div>               <p>Do the job and wrap it in a promise if it didn't already return one using <code>q.ref</code>.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-66">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-66">&#182;</a>               </div>               <p>Watch the file if the option was given.</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-67">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-67">&#182;</a>               </div>               <p>Return another promise which will resolve to the work promise</p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
+reach the same length.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  q.all promises
+
+<span class="function"><span class="title">printTable</span></span> = (fields, results) -&gt;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-50">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-50">&#182;</a>
+              </div>
+              <p>Add the headers to the top of the table.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  headers = {}
+  <span class="keyword">for</span> field <span class="keyword">in</span> fields
+    headers[field] = (field.charAt(<span class="number">0</span>).toUpperCase() + field.slice(<span class="number">1</span>))
+  results.unshift headers</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-51">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-51">&#182;</a>
+              </div>
+              <p>Figure out how wide each column must be, keyed by integer column index. Note that the header row is included
+in the fields array here because a header may be the widest cell in the column.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  maxLengths = <span class="keyword">for</span> field <span class="keyword">in</span> fields
+    max = Math.max.apply Math, results.map (result) -&gt;
+      <span class="keyword">unless</span> result[field]?
+        console.error <span class="string">"Couldn't get value from <span class="subst">#{field}</span> on"</span>, result
+
+      result[field].toString().length
+    max + <span class="number">2</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-52">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-52">&#182;</a>
+              </div>
+              <p>Print out each row of results. Use a mutable array buffer which is then joined so new strings aren&#39;t created with a
+bunch of += ops.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">for</span> result <span class="keyword">in</span> results
+    out = []
+    <span class="keyword">for</span> field, i <span class="keyword">in</span> fields
+      data = result[field].toString()
+      out.push <span class="string">' '</span> <span class="keyword">for</span> j <span class="keyword">in</span> [data.length..maxLengths[i]]
+      out.push data
+    console.log out.join(<span class="string">''</span>)
+
+  <span class="keyword">return</span> results</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-53">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-53">&#182;</a>
+              </div>
+              <p>Logs a stats about files to the console for inspection.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="function"><span class="title">statFiles</span></span> = (files, options = {}) -&gt;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-54">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-54">&#182;</a>
+              </div>
+              <p>If given a string, glob it to expand any wildcards.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">if</span> <span class="keyword">typeof</span> files <span class="keyword">is</span> <span class="string">'string'</span>
+    files = glob.sync files</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-55">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-55">&#182;</a>
+              </div>
+              <p>If we&#39;re comparing two shas, we need to check the two shas out somewhere else, and run the stats on all those files</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">if</span> options.compare
+    fields = options.fields || [<span class="string">'filename'</span>, <span class="string">'filetype'</span>]
+    compareFields = options.compareFields || [<span class="string">'sloc'</span>, <span class="string">'size'</span>]</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-56">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-56">&#182;</a>
+              </div>
+              <p>Get the two git refs we are comparing</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    ask(<span class="string">'git ref A'</span>).<span class="keyword">then</span>((refA) -&gt;
+      ask(<span class="string">'git ref B'</span>).<span class="keyword">then</span> (refB) -&gt;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-57">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-57">&#182;</a>
+              </div>
+              <p>Get the root of the git repository</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        getGitRoot().<span class="keyword">then</span>((root) -&gt;
+
+          clones = <span class="keyword">for</span> ref <span class="keyword">in</span> [refA, refB]
+            <span class="keyword">do</span> (ref) -&gt;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-58">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-58">&#182;</a>
+              </div>
+              <p>Clone each root to a temporary directory and check out the given ref</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>              tmpdir = temp.mkdirSync()
+              cloneCmd = <span class="string">"git clone <span class="subst">#{root}</span> <span class="subst">#{tmpdir}</span>"</span>
+              console.error cloneCmd
+              [child, clone] = exec cloneCmd
+              child.stdin.end()
+
+              clone.<span class="keyword">then</span>(([stdout, stderr]) -&gt;
+                [child, checkingOut] = exec <span class="string">"cd <span class="subst">#{tmpdir}</span> &amp;&amp; git checkout <span class="subst">#{ref}</span>"</span>
+                checkingOut
+              ).<span class="keyword">then</span> () -&gt;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-59">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-59">&#182;</a>
+              </div>
+              <p>Get an array of file paths relative to this temporary checkout</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                clonedFiles = files.map (file) -&gt; path.resolve(file).replace(root, tmpdir)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-60">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-60">&#182;</a>
+              </div>
+              <p>Stat the temporary files, and once the details come in, augment them with the original file&#39;s details</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                _statFiles(clonedFiles, options).<span class="keyword">then</span> (results) -&gt;
+                  <span class="keyword">for</span> result, i <span class="keyword">in</span> results
+                    result[<span class="string">'originalFilename'</span>] = files[i]
+                    result[<span class="string">'ref'</span>] = ref
+                  results</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-61">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-61">&#182;</a>
+              </div>
+              <p>Wait for all the clones and statting to finish.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          q.all(clones)
+        ).<span class="keyword">then</span>((results) -&gt;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-62">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-62">&#182;</a>
+              </div>
+              <p>Build a table key&#39;d by the original filename</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          table = {}
+          <span class="keyword">for</span> resultSet <span class="keyword">in</span> results
+            <span class="keyword">for</span> result <span class="keyword">in</span> resultSet
+              tableEntry = (table[result.originalFilename] ||= {})
+              <span class="keyword">for</span> k <span class="keyword">in</span> fields
+                tableEntry[k] = result[k]
+              <span class="keyword">for</span> k <span class="keyword">in</span> compareFields
+                tableEntry[<span class="string">"<span class="subst">#{k}</span> at <span class="subst">#{result.ref}</span>"</span>] = result[k]</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-63">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-63">&#182;</a>
+              </div>
+              <p>Revert to the original filename</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          results = <span class="keyword">for</span> k, v <span class="keyword">of</span> table
+            v[<span class="string">'filename'</span>] = k
+            v</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-64">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-64">&#182;</a>
+              </div>
+              <p>Grab a list of the table fields</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          tableFields = Array::slice.call fields
+          <span class="keyword">for</span> field <span class="keyword">in</span> compareFields
+            <span class="keyword">for</span> ref <span class="keyword">in</span> [refA, refB]
+              tableFields.push <span class="string">"<span class="subst">#{field}</span> at <span class="subst">#{ref}</span>"</span>
+        )
+    ).done()
+  <span class="keyword">else</span>
+    fields = options.fields || [<span class="string">'filename'</span>, <span class="string">'filetype'</span>, <span class="string">'sloc'</span>, <span class="string">'size'</span>]
+    _statFiles(files, options).<span class="keyword">then</span>((results) -&gt;
+      printTable(fields, results)
+    ).done()
+
+<span class="function"><span class="title">addWatchDependency</span></span> = (file) -&gt;
+  <span class="keyword">return</span> <span class="keyword">unless</span> muffin._watchDependencies
+  muffin._watchDependencies.push file
+  <span class="keyword">return</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-65">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-65">&#182;</a>
+              </div>
+              <p><code>compileMap</code> is an internal helper for taking the passed in options to <code>muffin.run</code> and turning strings
+into useful objects.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="function"><span class="title">compileMap</span></span> = (map) -&gt;
+  <span class="keyword">for</span> pattern, action <span class="keyword">of</span> map
+    {pattern: <span class="keyword">new</span> RegExp(pattern), action: action}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-66">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-66">&#182;</a>
+              </div>
+              <p>Store a reference to the options that muffin was run with so we can ensure that none get lost if they don&#39;t get passed in by the user.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>runOptions = {}
+
+<span class="function"><span class="title">run</span></span> = (args) -&gt;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-67">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-67">&#182;</a>
+              </div>
+              <p>Grab the glob if not given by globbing a default string, globbing a given string, or globbing the array of given strings.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">if</span> !args.files?
+    args.files = glob.sync <span class="string">'./**/*'</span>
+  <span class="keyword">else</span> <span class="keyword">if</span> <span class="keyword">typeof</span> args.files <span class="keyword">is</span> <span class="string">'string'</span>
+    args.files = glob.sync args.files
+  <span class="keyword">else</span>
+    args.files = args.files.reduce ((a, b) -&gt; a.concat(glob.sync(b))), []
+
+  compiledMap = compileMap args.map</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-68">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-68">&#182;</a>
+              </div>
+              <p>Save the reference to this run&#39;s options. Unfortuantly this renders muffin not many run safe. Bummer, for now.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  runOptions = args.options</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-69">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-69">&#182;</a>
+              </div>
+              <p>Run the before callback, and wait till it finishes by wrapping it in a <code>q.resolve</code> call to get a promise.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="function"><span class="title">before</span></span> = -&gt; q.all [growlCheckPromise, q.resolve(<span class="keyword">if</span> args.before <span class="keyword">then</span> args.before() <span class="keyword">else</span> <span class="literal">true</span>)]
+
+  q.fcall(before).<span class="keyword">then</span>(-&gt;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-70">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-70">&#182;</a>
+              </div>
+              <p>Once the before callback has been successfully run, loop over all the pattern -&gt; action pairs, and see if they
+match any of the files in the array. If so, delete the file, and run the action.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    actionPromises = []
+    compiledMap.forEach (map) -&gt;
+      muffin._watchDependencies = []
+      <span class="keyword">for</span> i, file <span class="keyword">of</span> args.files
+        <span class="keyword">if</span> matches = map.pattern.exec(file)
+          <span class="keyword">delete</span> args.files[i]
+          actionPromises.push map.action(matches)
+          muffin._watchDependencies.push file</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-71">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-71">&#182;</a>
+              </div>
+              <p>Watch the file if the option was given.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          <span class="keyword">if</span> args.options.watch
+            <span class="keyword">if</span> args.options.commit
+              console.error(<span class="string">"Can't watch committed versions of files, sorry!"</span>)
+              process.exit(<span class="number">1</span>)
+
+            <span class="keyword">for</span> file <span class="keyword">in</span> muffin._watchDependencies
+              <span class="keyword">do</span> (map, matches, file) -&gt;
+                  ofs.watch file, persistent: <span class="literal">true</span>, (event) -&gt;
+                    <span class="keyword">return</span> <span class="keyword">if</span> event != <span class="string">'change'</span> || inRebase()
+                    q.fcall(before)
+                    .<span class="keyword">then</span>(-&gt; map.action(matches))
+                    .<span class="keyword">then</span>((result) -&gt; args.after() <span class="keyword">if</span> args.after)
+                    .done()
+
+      <span class="keyword">delete</span> muffin._watchDependencies
+    q.all(actionPromises).<span class="keyword">then</span>(-&gt;
+      args.after() <span class="keyword">if</span> args.after
+    )
+  ).done()
+
+<span class="keyword">for</span> k, v <span class="keyword">of</span> {run, copyFile, doccoFile, notify, minifyScript, readFile, writeFile, compileString, compileScript, compileTree, exec, extend, statFiles, mkdir_p, addWatchDependency}
+  exports[k] = v</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
