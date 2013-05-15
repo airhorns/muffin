@@ -261,7 +261,7 @@ minifyScript = (source, options = {}) ->
     toplevel.figure_out_scope()
 
     # Do any custom transforms the user asks for
-    toplevel = options.transform(toplevel) if options.transform?
+    toplevel = options.transform(toplevel, UglifyJS) if options.transform?
 
     # Compress and apply the transformation
     sq = UglifyJS.Compressor({warnings: false})
