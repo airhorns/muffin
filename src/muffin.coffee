@@ -533,12 +533,38 @@ run = (args) ->
 
             for file in muffin._watchDependencies
               do (map, matches, file) ->
-                  ofs.watch file, persistent: true, (event) ->
-                    return if event != 'change' || inRebase()
-                    q.fcall(before)
-                    .then(-> map.action(matches))
-                    .then((result) -> args.after() if args.after)
-                    .done()
+                timeout = null
+                watcher = null
+                lastTime = 0
+
+                # Certain text editors save files by renaming them. We need to handle this by waiting a bit
+                # for the rename to actually happen, then watching the new file.
+                queueCompile = ->
+                  clearTimeout timeout
+                  compile = =>
+                    ofs.stat file, (err, stats) ->
+                      return console.error(err) if err
+
+                      # Don't recompile if the file wasn't actually changed
+                      return watch() if stats.mtime.getTime() is lastTime
+                      lastTime = stats.mtime.getTime()
+
+                      # Tell snockets that it needs to rebuild the dependency graph
+                      snockets.invalidateDepCache()
+
+                      q.fcall(before)
+                      .then(-> map.action(matches))
+                      .then((result) -> args.after() if args.after)
+                      .then(watch)
+                      .done()
+
+                  timeout = setTimeout(compile, 20)
+
+                do watch = =>
+                  # Detach the old watch handler if it exists
+                  watcher?.close()
+                  watcher = ofs.watch file, persistent: true, (event) ->
+                    queueCompile() unless inRebase()
 
       delete muffin._watchDependencies
     q.all(actionPromises).then(->
