@@ -23,7 +23,7 @@
     "uglify-js": "~>2.3.2",
     "prompt": "~>0.2.9",
     "temp": "~>0.5.0",
-    "snockets": "git://github.com/pushrax/snockets.git"
+    "snockets": "git://github.com/pushrax/snockets.git#2048b51"
   },
   "devDependencies": {},
   "optionalDependencies": {}
