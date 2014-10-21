@@ -220,7 +220,10 @@ compileTree = (root, target, options = {}) ->
   compilation.promise.then (returns) ->
     [contents, concatenationChanged] = returns
     writeFile(target, contents, options)
-    .then(-> notify(root, "Compiled tree at #{root} to #{target} successfully"))
+    .then(->
+      if options.defines
+        ofs.appendFileSync( target, "const #{name} = #{options.defines[name]};\n" ) for name of options.defines
+      notify(root, "Compiled tree at #{root} to #{target} successfully"))
     .then(-> contents)
 
 # Generate a command to growl
@@ -264,7 +267,7 @@ minifyScript = (source, options = {}) ->
     toplevel = options.transform(toplevel, UglifyJS) if options.transform?
 
     # Compress and apply the transformation
-    sq = UglifyJS.Compressor({warnings: false})
+    sq = UglifyJS.Compressor({warnings: false, global_defs: options.defines })
     toplevel = toplevel.transform(sq)
 
     # Mangle names
