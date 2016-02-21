@@ -1,6 +1,6 @@
 {
-  "author": "Harry Brundage <harry.brundage@jadedpixel.com> (http://shopify.com/)",
-  "name": "muffin",
+  "author": "Harry Brundage <harry@shopify.com> (http://shopify.com/)",
+  "name": "muffin-builder",
   "description": "Handy helpers for Cakefiles",
   "version": "0.9.0",
   "homepage": "http://github.com/hornairs/muffin",

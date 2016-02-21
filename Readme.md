@@ -7,18 +7,25 @@ A set of handy helpers for your Cakefiles.
 
 A set of generic high level file operations you don't want to implement yourself, like copying files, CoffeeScript compilation and compile time requiring, minification, and SLOC counting.
 
+## Maintenance status
+
+Note: Muffin is completely unmaintained. Gulp and grunt seem pretty cool and are both definitely maintained. If you'd like to take muffin over, shoot me an email at harry@shopify.com!
+
 ## Installation
 
 Using `npm`, do
 
-    npm install muffin
+    npm install muffin-builder
 
 and then require in your file using
 
 ```coffeescript
-muffin = require 'muffin'
+muffin = require 'muffin-builder'
 ```
 
+## Rename
+
+Note, muffin used to be called `muffin` on NPM, now it's called `muffin-builder`. Muffin is too awesome a name to reserve for a thing which isn't really used.
 
 ## General use
 
